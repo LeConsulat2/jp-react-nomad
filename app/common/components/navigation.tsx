@@ -122,19 +122,33 @@ const menus = [
 
 export default function Navigation() {
   return (
+    // 상단 네비게이션 바 전체 컨테이너
     <nav className="flex px-20 h-16 items-center justify-between backdrop-blur fixed top-0 left-0 right-0 z-50 bg-background/50">
       <div className="flex items-center ">
+        {/* 로고 또는 홈으로 가는 링크 */}
         <Link to="/" className="font-bold tracking-tighter text-lg">
           We-Create
         </Link>
+
+        {/* 로고와 메뉴 사이 구분선 */}
         <Separator orientation="vertical" className="h-6 mx-4" />
+
+        {/* 네비게이션 전체 감싸는 메뉴 컴포넌트 (Radix UI의 NavigationMenu) */}
         <NavigationMenu>
+          {/* 여러 메뉴 리스트(Products, Jobs 등)를 감싸는 리스트 컴포넌트 */}
           <NavigationMenuList>
+            {/* 메뉴 항목 하나씩 순회 (ex. Products, Jobs, Community 등) */}
             {menus.map((menu) => (
-              <NavigationMenuItem key={menus.name}>
+              // 각각의 상위 메뉴 아이템 (드롭다운 열릴 메뉴)
+              <NavigationMenuItem key={menu.name}>
+                {/* 메뉴 제목 누르면 드롭다운 열리게 하는 트리거 버튼 */}
                 <NavigationMenuTrigger>{menu.name}</NavigationMenuTrigger>
+
+                {/* 드롭다운 안의 내용들 */}
                 <NavigationMenuContent>
+                  {/* 드롭다운 내부 링크들 (하위 메뉴) */}
                   {menu.items?.map((item) => (
+                    // 하위 메뉴 하나하나
                     <NavigationMenuItem key={item.name}>
                       <Link to={item.to}>{item.name}</Link>
                     </NavigationMenuItem>
