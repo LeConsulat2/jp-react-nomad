@@ -162,3 +162,10 @@ export default function Navigation() {
     </nav>
   );
 }
+
+// NavigationMenu       ← 전체 네비게이션 시스템을 감싸는 컨테이너
+//   └─ NavigationMenuList   ← 여러 개의 메뉴 항목들 모음
+//         └─ NavigationMenuItem (ex. Products, Jobs, ...)
+//               ├─ NavigationMenuTrigger   ← 메뉴 제목 (클릭하면 드롭다운 열림)
+//               └─ NavigationMenuContent   ← 드롭다운 안에 들어가는 내용들
+//                     └─ NavigationMenuItem + Link (하위 링크들)
