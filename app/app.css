@@ -64,13 +64,13 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+@layer base {
+  * {
+    @apply border-border;
   }
-
-  html,
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
   }
 }
