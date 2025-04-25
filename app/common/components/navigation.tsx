@@ -10,6 +10,30 @@ import {
   navigationMenuTriggerStyle,
 } from './ui/navigation-menu';
 import { cn } from '~/lib/utils';
+import {
+  BarChart3Icon,
+  Divide,
+  Settings2Icon,
+  Settings,
+  SettingsIcon,
+  UserIcon,
+  Book,
+  BookA,
+  LogOutIcon,
+  BellIcon,
+  MessageCircleIcon,
+} from 'lucide-react';
+import { Button } from './ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 const menus = [
   {
@@ -122,7 +146,13 @@ const menus = [
   },
 ];
 
-export default function Navigation() {
+export default function Navigation({
+  isLoggedIn,
+  hasNotifications,
+  hasMessages,
+}: {
+  isLoggedIn: boolean;
+}) {
   return (
     // 상단 네비게이션 바 전체 컨테이너 (고정 위치, 흐림 효과 포함)
     <nav className="flex px-20 h-16 items-center justify-between backdrop-blur fixed top-0 left-0 right-0 z-50 bg-background/50">
@@ -148,47 +178,128 @@ export default function Navigation() {
                 </Link>
 
                 {/* 드롭다운 열렸을 때 보여질 내용들 */}
-                <NavigationMenuContent>
-                  {/* 드롭다운 내부 하위 링크들 */}
-                  <ul className="grid w-[600px] font-light gap-3 p-4 grid-cols-2">
-                    {menu.items?.map((item) => (
-                      // 각 하위 메뉴 항목
-                      <NavigationMenuItem key={item.name}>
-                        {/* 하위 메뉴 링크 감싸는 NavigationMenuLink (Radix 규칙) */}
-                        <NavigationMenuLink asChild>
-                          {/* 실제 하위 메뉴 링크 */}
-                          <Link
-                            to={item.to}
-                            className={cn([
-                              // 기본 스타일
-                              'p-3 space-y-1 block leading-none no-underline outline-none rounded-md transition-colors focus:bg-accent hover:bg-accent',
-                              // 특정 항목 강조 스타일 (예: Promote, Submit)
-                              item.to === '/products/promote' &&
-                                'col-span-2 bg-primary/10 hover:bg-primary/20 focus:bg-primary/20',
-                              item.to === '/jobs/submit' &&
-                                'col-span-2 bg-primary/10 hover:bg-primary/20 focus:bg-primary/20',
-                            ])}
-                          >
-                            {/* 하위 메뉴 제목 */}
-                            <span className="text-sm font-medium leading-relaxed">
-                              {item.name}
-                            </span>
+                {menu.items && (
+                  <NavigationMenuContent>
+                    {/* 드롭다운 내부 하위 링크들 */}
+                    <ul className="grid w-[600px] font-light gap-3 p-4 grid-cols-2">
+                      {menu.items.map((item) => (
+                        <NavigationMenuItem key={item.name}>
+                          {/* 하위 메뉴 링크 감싸는 NavigationMenuLink (Radix 규칙) */}
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to={item.to}
+                              className={cn([
+                                'p-3 space-y-1 block leading-none no-underline outline-none rounded-md transition-colors focus:bg-accent hover:bg-accent',
+                                item.to === '/products/promote' &&
+                                  'col-span-2 bg-primary/10 hover:bg-primary/20 focus:bg-primary/20',
+                                item.to === '/jobs/submit' &&
+                                  'col-span-2 bg-primary/10 hover:bg-primary/20 focus:bg-primary/20',
+                              ])}
+                            >
+                              {/* 하위 메뉴 제목 */}
+                              <span className="text-sm font-medium leading-relaxed">
+                                {item.name}
+                              </span>
 
-                            {/* 설명 텍스트 */}
-                            <p className="text-sm leading-loose text-muted-foreground">
-                              {item.description}
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
+                              {/* 설명 텍스트 */}
+                              <p className="text-sm leading-loose text-muted-foreground">
+                                {item.description}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                )}
               </NavigationMenuItem>
             ))}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
+
+      {/* 로그인 여부에 따른 오른쪽 메뉴 */}
+      {isLoggedIn ? (
+        <div className="flex items-center gap-2">
+          <Button size="icon" variant="ghost" asChild className="relative">
+            <Link to="/my/notifications">
+              <BellIcon className="size-4" />
+              {hasNotifications && (
+                <div className="absolute top-1.5 right-1 size-2 bg-red-500 rounded-full"></div>
+              )}
+            </Link>
+          </Button>
+          <Button size="icon" variant="ghost" asChild className="relative">
+            <Link to="/my/messages">
+              <MessageCircleIcon className="size-4" />
+              {hasNotifications && (
+                <div className="absolute top-1.5 right-1 size-2 bg-red-500 rounded-full"></div>
+              )}
+            </Link>
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" />
+                {/* 유저 이미지 로딩 안될 때 대체 텍스트 */}
+                <AvatarFallback>No Pic</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            {/* <DropdownMenuContent>...</DropdownMenuContent> */}
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel className="flex flex-col gap-2">
+                <span className="font-medium">Jonathan Park</span>
+                <span className="text-xs  text-muted-foreground">
+                  @username
+                </span>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/my/dashboard">
+                    <BarChart3Icon className="size-4 mr-2" />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/my/profile">
+                    <UserIcon className="size-4 mr-2" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/my/settings">
+                    <SettingsIcon className="size-4 mr-2" />
+                    Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/my/portfolio">
+                    <BookA className="size-4 mr-2" />
+                    Portfolio
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link to="/auth/logout">
+                  <LogOutIcon />
+                  Logout
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ) : (
+        <div className="flex items-center gap-3">
+          <Button asChild>
+            <Link to="/auth/login">Login</Link>
+          </Button>
+          <Button asChild>
+            <Link to="/auth/join">Join</Link>
+          </Button>
+        </div>
+      )}
     </nav>
   );
 }
