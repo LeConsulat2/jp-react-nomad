@@ -7,7 +7,9 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
 } from './ui/navigation-menu';
+import { cn } from '~/lib/utils';
 
 const menus = [
   {
@@ -122,9 +124,9 @@ const menus = [
 
 export default function Navigation() {
   return (
-    // 상단 네비게이션 바 전체 컨테이너
+    // 상단 네비게이션 바 전체 컨테이너 (고정 위치, 흐림 효과 포함)
     <nav className="flex px-20 h-16 items-center justify-between backdrop-blur fixed top-0 left-0 right-0 z-50 bg-background/50">
-      <div className="flex items-center ">
+      <div className="flex items-center">
         {/* 로고 또는 홈으로 가는 링크 */}
         <Link to="/" className="font-bold tracking-tighter text-lg">
           We-Create
@@ -133,26 +135,54 @@ export default function Navigation() {
         {/* 로고와 메뉴 사이 구분선 */}
         <Separator orientation="vertical" className="h-6 mx-4" />
 
-        {/* 네비게이션 전체 감싸는 메뉴 컴포넌트 (Radix UI의 NavigationMenu) */}
+        {/* 네비게이션 전체 감싸는 메뉴 컴포넌트 (Radix UI NavigationMenu) */}
         <NavigationMenu>
-          {/* 여러 메뉴 리스트(Products, Jobs 등)를 감싸는 리스트 컴포넌트 */}
+          {/* 메뉴 리스트들을 감싸는 컴포넌트 */}
           <NavigationMenuList>
-            {/* 메뉴 항목 하나씩 순회 (ex. Products, Jobs, Community 등) */}
+            {/* 상위 메뉴 반복 렌더링 */}
             {menus.map((menu) => (
-              // 각각의 상위 메뉴 아이템 (드롭다운 열릴 메뉴)
               <NavigationMenuItem key={menu.name}>
-                {/* 메뉴 제목 누르면 드롭다운 열리게 하는 트리거 버튼 */}
-                <NavigationMenuTrigger>{menu.name}</NavigationMenuTrigger>
+                {/* 상위 메뉴 이름 버튼 (클릭 시 드롭다운 오픈) */}
+                <Link to={menu.to}>
+                  <NavigationMenuTrigger>{menu.name}</NavigationMenuTrigger>
+                </Link>
 
-                {/* 드롭다운 안의 내용들 */}
+                {/* 드롭다운 열렸을 때 보여질 내용들 */}
                 <NavigationMenuContent>
-                  {/* 드롭다운 내부 링크들 (하위 메뉴) */}
-                  {menu.items?.map((item) => (
-                    // 하위 메뉴 하나하나
-                    <NavigationMenuItem key={item.name}>
-                      <Link to={item.to}>{item.name}</Link>
-                    </NavigationMenuItem>
-                  ))}
+                  {/* 드롭다운 내부 하위 링크들 */}
+                  <ul className="grid w-[600px] font-light gap-3 p-4 grid-cols-2">
+                    {menu.items?.map((item) => (
+                      // 각 하위 메뉴 항목
+                      <NavigationMenuItem key={item.name}>
+                        {/* 하위 메뉴 링크 감싸는 NavigationMenuLink (Radix 규칙) */}
+                        <NavigationMenuLink asChild>
+                          {/* 실제 하위 메뉴 링크 */}
+                          <Link
+                            to={item.to}
+                            className={cn([
+                              // 기본 스타일
+                              'p-3 space-y-1 block leading-none no-underline outline-none rounded-md transition-colors focus:bg-accent hover:bg-accent',
+                              // 특정 항목 강조 스타일 (예: Promote, Submit)
+                              item.to === '/products/promote' &&
+                                'col-span-2 bg-primary/10 hover:bg-primary/20 focus:bg-primary/20',
+                              item.to === '/jobs/submit' &&
+                                'col-span-2 bg-primary/10 hover:bg-primary/20 focus:bg-primary/20',
+                            ])}
+                          >
+                            {/* 하위 메뉴 제목 */}
+                            <span className="text-sm font-medium leading-relaxed">
+                              {item.name}
+                            </span>
+
+                            {/* 설명 텍스트 */}
+                            <p className="text-sm leading-loose text-muted-foreground">
+                              {item.description}
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    ))}
+                  </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
             ))}
