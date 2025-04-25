@@ -1,19 +1,10 @@
-import { Link, type MetaFunction } from 'react-router';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../components/ui/card';
-import { ChevronUpIcon, EyeIcon, MessageCircleIcon } from 'lucide-react';
-import { Button } from '../components/ui/button';
+import type { MetaFunction } from 'react-router';
+import { ProductCard } from '~/features/products/components/product-card';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Home | We-Create' },
-    { name: 'description', content: 'Welcome to We-Create' },
+    { title: 'Home | wemake' },
+    { name: 'description', content: 'Welcome to wemake' },
   ];
 };
 
@@ -23,42 +14,22 @@ export default function HomePage() {
       <div className="grid grid-cols-3 gap-4">
         <div>
           <h2 className="text-5xl font-bold leading-tight tracking-tight">
-            Today's Ideas & Products
+            Today's Products
           </h2>
-          <p className="text-xl font-light text-card-foreground">
-            The best products made by our community today
+          <p className="text-xl font-light text-foreground">
+            The best products made by our community today.
           </p>
         </div>
-        <div>
-          <Link to={'/products/productId'}>
-            <Card className="w-full flex items-center justify-between bg-transparent hover:bg-card/50">
-              <CardHeader>
-                <CardTitle className="text-2xl font-semibold leading-none tracking-tight">
-                  Product Name
-                </CardTitle>
-                <CardDescription className="text-muted-foreground">
-                  Product Description
-                </CardDescription>
-                <div className="flex items-center gap-4 mt-2">
-                  <div className="flex items-center gap-px text-xs text-muted-foreground">
-                    <MessageCircleIcon className="w-4 h-4 " />
-                    <span>12</span>
-                  </div>
-                  <div className="flex items-center gap-px text-xs text-muted-foreground">
-                    <EyeIcon className="w-4 h-4 " />
-                    <span>12</span>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardFooter className="py-0">
-                <Button variant="outline" className="flex flex-col h-14">
-                  <ChevronUpIcon className="size-4 shrink-0" />
-                  <span>60</span>
-                </Button>
-              </CardFooter>
-            </Card>
-          </Link>
-        </div>
+        {Array.from({ length: 10 }).map((_, index) => (
+          <ProductCard
+            id={`productId-${index}`}
+            name="Product Name"
+            description="Product Description"
+            commentsCount={12}
+            viewsCount={12}
+            votesCount={120}
+          />
+        ))}
       </div>
     </div>
   );
