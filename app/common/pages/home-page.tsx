@@ -1,17 +1,24 @@
+// React Router에서 meta 정보를 정의할 때 사용할 타입을 가져옵니다.
 import type { MetaFunction } from 'react-router';
+// ProductCard 컴포넌트를 경로에 맞게 가져옵니다.
 import { ProductCard } from '~/features/products/components/product-card';
 
+// <head>에 들어갈 메타 태그 정보를 설정합니다.
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Home | wemake' },
-    { name: 'description', content: 'Welcome to wemake' },
+    { title: 'Home | wemake' }, // 브라우저 탭에 표시될 페이지 제목
+    { name: 'description', content: 'Welcome to wemake' }, // SEO용 페이지 설명
   ];
 };
 
+// HomePage 컴포넌트: 메인 홈 화면을 렌더링합니다.
 export default function HomePage() {
   return (
+    // 좌우 여백을 px-20으로 설정해 콘텐츠가 화면 양쪽에 붙지 않도록 합니다.
     <div className="px-20">
+      {/* 3열 그리드 레이아웃, 아이템 간격은 gap-4 */}
       <div className="grid grid-cols-3 gap-4">
+        {/* 첫 번째 열: 제목과 서브텍스트 */}
         <div>
           <h2 className="text-5xl font-bold leading-tight tracking-tight">
             Today's Products
@@ -20,14 +27,17 @@ export default function HomePage() {
             The best products made by our community today.
           </p>
         </div>
+
+        {/* 나머지 열: ProductCard 컴포넌트를 배열로 10개 렌더링 */}
         {Array.from({ length: 10 }).map((_, index) => (
           <ProductCard
-            id={`productId-${index}`}
-            name="Product Name"
-            description="Product Description"
-            commentsCount={12}
-            viewsCount={12}
-            votesCount={120}
+            key={index} // React 리스트 렌더링 시 고유 key 필수
+            id={`productId-${index}`} // 각 카드에 전달할 고유 상품 ID
+            name="Product Name" // 카드에 표시할 상품명
+            description="Product Description" // 카드에 표시할 상품 설명
+            commentsCount={12} // 댓글 수
+            viewsCount={12} // 조회 수
+            votesCount={120} // 추천(투표) 수
           />
         ))}
       </div>
