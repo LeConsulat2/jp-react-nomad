@@ -1,29 +1,17 @@
-// --- 라이브러리 및 컴포넌트 import ---
-// React Router의 'Link' 컴포넌트를 가져옵니다.
-// 클릭 시 페이지 이동을 할 수 있게 해주는 컴포넌트입니다.
 import { Link } from 'react-router';
-
-// 아바타(프로필 사진)를 표시하기 위한 UI 컴포넌트들을 가져옵니다.
 import {
-  Avatar, // 아바타 전체 컴포넌트
-  AvatarFallback, // 프로필 이미지가 없을 경우 대체로 보여줄 이니셜 등
-  AvatarImage, // 실제 프로필 이미지를 렌더링하는 컴포넌트
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
 } from '~/common/components/ui/avatar';
-
-// 버튼 UI 컴포넌트를 가져옵니다.
-// 텍스트 링크나 액션 버튼을 만들 때 사용합니다.
 import { Button } from '~/common/components/ui/button';
-
-// 카드 UI 컴포넌트들을 가져옵니다.
-// 게시글을 카드 형태로 깔끔하게 보여줄 때 사용합니다.
 import {
-  Card, // 카드 전체를 감싸는 레이아웃
-  CardFooter, // 카드 하단 영역
-  CardHeader, // 카드 상단 영역
-  CardTitle, // 카드 내 타이틀(글 제목) 표시
+  Card,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from '~/common/components/ui/card';
 
-// --- 타입 정의 ---
 // PostCard 컴포넌트가 받을 props(속성)들의 타입을 정의합니다.
 interface PostCardProps {
   id: string; // 게시글 ID (URL 이동에 사용)

@@ -1,19 +1,9 @@
-// --- 라이브러리 및 컴포넌트 import ---
-// React Router 라이브러리에서 'Link' 컴포넌트와 'MetaFunction' 타입을 가져옵니다.
-// 'Link'는 페이지 간 이동할 때 사용하고, 'MetaFunction'은 페이지 메타데이터를 설정할 때 사용합니다.
 import { Link, type MetaFunction } from 'react-router';
-
-// 'ProductCard' 컴포넌트를 현재 파일에 가져옵니다.
-// 각 제품 정보를 카드 형태로 보여주는 UI 컴포넌트입니다.
 import { ProductCard } from '~/features/products/components/product-card';
-
-// 'Button' 컴포넌트를 가져옵니다.
-// 링크나 액션 버튼을 스타일링할 때 사용합니다.
 import { Button } from '../components/ui/button';
-
-// 'PostCard' 컴포넌트를 가져옵니다.
-// 커뮤니티 내 토론(post) 정보를 카드 형태로 보여주는 UI 컴포넌트입니다.
 import { PostCard } from '~/features/products/components/post-card';
+import { IdeaCard } from '~/features/products/components/idea-card';
+import { index } from '@react-router/dev/routes';
 
 // --- 메타데이터 설정 ---
 // 페이지의 <head> 영역에 들어갈 메타 정보를 설정하는 함수입니다.
@@ -27,7 +17,7 @@ export const meta: MetaFunction = () => {
 
 // --- HomePage 컴포넌트 ---
 // 메인 홈페이지 화면을 구성하는 컴포넌트입니다.
-// 'Today's Products' 섹션과 'Latest Discussions' 섹션으로 나누어 렌더링합니다.
+// 'Today's Products', 'Latest Discussions', 'IdeasGPT' 세 가지 섹션으로 구성합니다.
 export default function HomePage() {
   return (
     // 전체 레이아웃을 감싸는 최상위 div입니다.
@@ -52,9 +42,12 @@ export default function HomePage() {
 
         {/* 오른쪽 두 번째, 세 번째 컬럼: ProductCard 리스트 */}
         {Array.from({ length: 11 }).map((_, index) => (
+          // map 함수 내부 (_: 값은 사용하지 않고, index만 사용)
+          // _ : 현재 배열 요소 (여기서는 필요 없으므로 무시)
+          // index : 현재 요소의 순서 (0부터 시작하는 번호), key 설정 등에 사용
           <ProductCard
             key={index} // [중요] map 사용 시 key prop 필수
-            id={`productId-${index}`} // 각 제품 카드의 고유 id (오타 수정함)
+            id={`productId-${index}`} // 각 제품 카드의 고유 id
             name="Product Name" // 제품 이름
             description="Product Description" // 제품 설명
             commentsCount={12} // 댓글 수
@@ -83,14 +76,49 @@ export default function HomePage() {
 
         {/* 오른쪽 두 번째, 세 번째 컬럼: PostCard 리스트 */}
         {Array.from({ length: 11 }).map((_, index) => (
+          // map 함수 내부 (_: 값은 사용하지 않고, index만 사용)
+          // _ : 현재 배열 요소 (여기서는 필요 없음)
+          // index : 현재 반복 중인 번호 (0~10), key와 id로 사용
           <PostCard
-            key={index} // [중요] map 사용 시 key prop 필수
+            key={`postId-${index}`} // [중요] map 사용 시 key prop 필수
             id={`postId-${index}`} // 각 게시글 카드의 고유 id
             title="What is the best productivity tool?" // 게시글 제목
             author="Jonathan" // 작성자 이름
             authorAvatarUrl="" // 작성자 아바타 URL (아직 비어 있음)
             category="Productivity" // 게시글 카테고리
             postedAt="12 hours ago" // 게시글 작성 시간
+          />
+        ))}
+      </div>
+
+      {/* --- IdeasGPT 섹션 --- */}
+      <div className="grid grid-cols-3 gap-4">
+        {/* 왼쪽 첫 번째 컬럼: 섹션 타이틀과 설명 문구 */}
+        <div>
+          <h2 className="text-5xl font-bold text-foreground">IdeasGPT</h2>
+          <p className="text-xl font-light text-foreground">
+            Find your next ideas!
+          </p>
+
+          {/* 'Explore All Ideas' 링크 버튼 (아이디어 전체 보기) */}
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/ideas">Explore All Ideas! &rarr;</Link>
+          </Button>
+        </div>
+
+        {/* 오른쪽 두 번째, 세 번째 컬럼: IdeaCard 리스트 */}
+        {Array.from({ length: 5 }).map((_, index) => (
+          // map 함수 내부 (_: 값은 사용하지 않고, index만 사용)
+          // _ : 현재 배열 요소 (필요 없음)
+          // index : 0~4 반복하며 key, id 등에 사용
+          <IdeaCard
+            key={`ideaId-${index}`} // key prop 설정
+            id={`ideaId-${index}`} // 각 아이디어 카드 고유 id
+            title="A startup that creates an AI-powered generated personal trainer, delivering customized fitness recommendations and tracking of progress using a mobile app to track workouts and progress as well as a website to manage the business."
+            viewsCount={123} // 조회 수
+            postedAt="10 hours ago" // 게시된 시간
+            likesCount={10} // 좋아요 수
+            claimed={index % 2 === 0} // 인덱스가 짝수면 Claimed 처리
           />
         ))}
       </div>
