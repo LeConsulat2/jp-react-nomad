@@ -4,6 +4,7 @@ import { Button } from '../components/ui/button';
 import { PostCard } from '~/features/products/components/post-card';
 import { IdeaCard } from '~/features/products/components/idea-card';
 import { index } from '@react-router/dev/routes';
+import { JobCard } from '~/features/products/components/job-card';
 
 // --- 메타데이터 설정 ---
 // 페이지의 <head> 영역에 들어갈 메타 정보를 설정하는 함수입니다.
@@ -119,6 +120,33 @@ export default function HomePage() {
             postedAt="10 hours ago" // 게시된 시간
             likesCount={10} // 좋아요 수
             claimed={index % 2 === 0} // 인덱스가 짝수면 Claimed 처리
+          />
+        ))}
+      </div>
+      <div className="grid grid-cols-4 gap-4">
+        <div>
+          <h2 className="text-5xl font-bold leading-tight tracking-tight">
+            Latest Jobs
+          </h2>
+          <p className="text-xl font-light text-foreground">
+            Find your dream job.
+          </p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/jobs">Explore all jobs &rarr;</Link>
+          </Button>
+        </div>
+        {Array.from({ length: 11 }).map((_, index) => (
+          <JobCard
+            key={`jobId-${index}`}
+            id={`jobId-${index}`}
+            company="AUT"
+            companyLogoUrl="https://github.com/mit.png"
+            companyHq="AUT University"
+            title="Counsellor"
+            postedAt="9 hours ago"
+            type="Full-time"
+            positionLocation="Remote"
+            salary="$90,000 - $120,000"
           />
         ))}
       </div>
