@@ -6,7 +6,9 @@ import { IdeaCard } from '~/features/products/components/idea-card';
 import { index } from '@react-router/dev/routes';
 import { JobCard } from '~/features/products/components/job-card';
 
-// --- 메타데이터 설정 ---
+// ==================================================
+// 🌐 메타데이터 설정
+// ==================================================
 // 페이지의 <head> 영역에 들어갈 메타 정보를 설정하는 함수입니다.
 // 주로 SEO(검색엔진 최적화)와 브라우저 탭 제목을 설정하는 데 사용합니다.
 export const meta: MetaFunction = () => {
@@ -16,15 +18,19 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-// --- HomePage 컴포넌트 ---
+// ==================================================
+// 🏠 HomePage 컴포넌트
+// ==================================================
 // 메인 홈페이지 화면을 구성하는 컴포넌트입니다.
-// 'Today's Products', 'Latest Discussions', 'IdeasGPT' 세 가지 섹션으로 구성합니다.
+// 'Today's Products', 'Latest Discussions', 'IdeasGPT', 'Latest Jobs' 네 가지 섹션으로 구성합니다.
 export default function HomePage() {
   return (
     // 전체 레이아웃을 감싸는 최상위 div입니다.
-    // 좌우 여백을 'px-20' (Tailwind 기준 5rem)로 주고, 위아래 섹션 간격을 'space-y-40'으로 설정합니다.
+    // 좌우 여백을 'px-20', 섹션 간 간격을 'space-y-40'으로 설정합니다.
     <div className="px-20 space-y-40">
-      {/* --- Today's Products 섹션 --- */}
+      {/* ==================================================
+          🛍️ Today's Products 섹션
+          ================================================== */}
       <div className="grid grid-cols-3 gap-4">
         {/* 왼쪽 첫 번째 컬럼: 섹션 타이틀과 설명 문구 */}
         <div>
@@ -34,8 +40,7 @@ export default function HomePage() {
           <p className="text-xl font-light text-foreground">
             The best products made by our community today.
           </p>
-
-          {/* 'Explore all products' 링크 버튼 (제품 전체 보러가기) */}
+          {/* 'Explore all products' 링크 버튼 */}
           <Button variant="link" asChild className="text-lg p-0">
             <Link to="/products/leaderboards">Explore all products &rarr;</Link>
           </Button>
@@ -43,22 +48,21 @@ export default function HomePage() {
 
         {/* 오른쪽 두 번째, 세 번째 컬럼: ProductCard 리스트 */}
         {Array.from({ length: 11 }).map((_, index) => (
-          // map 함수 내부 (_: 값은 사용하지 않고, index만 사용)
-          // _ : 현재 배열 요소 (여기서는 필요 없으므로 무시)
-          // index : 현재 요소의 순서 (0부터 시작하는 번호), key 설정 등에 사용
           <ProductCard
-            key={index} // [중요] map 사용 시 key prop 필수
-            id={`productId-${index}`} // 각 제품 카드의 고유 id
-            name="Product Name" // 제품 이름
-            description="Product Description" // 제품 설명
-            commentsCount={12} // 댓글 수
-            viewsCount={12} // 조회 수
-            votesCount={120} // 투표 수
+            key={index}
+            id={`productId-${index}`}
+            name="Product Name"
+            description="Product Description"
+            commentsCount={12}
+            viewsCount={12}
+            votesCount={120}
           />
         ))}
       </div>
 
-      {/* --- Latest Discussions 섹션 --- */}
+      {/* ==================================================
+          💬 Latest Discussions 섹션
+          ================================================== */}
       <div className="grid grid-cols-3 gap-4">
         {/* 왼쪽 첫 번째 컬럼: 섹션 타이틀과 설명 문구 */}
         <div>
@@ -68,8 +72,7 @@ export default function HomePage() {
           <p className="text-xl font-light text-foreground">
             The latest discussions from our community.
           </p>
-
-          {/* 'Explore all discussions' 링크 버튼 (커뮤니티 전체 보기) */}
+          {/* 'Explore all discussions' 링크 버튼 */}
           <Button variant="link" asChild className="text-lg p-0">
             <Link to="/community">Explore all discussions &rarr;</Link>
           </Button>
@@ -77,22 +80,21 @@ export default function HomePage() {
 
         {/* 오른쪽 두 번째, 세 번째 컬럼: PostCard 리스트 */}
         {Array.from({ length: 11 }).map((_, index) => (
-          // map 함수 내부 (_: 값은 사용하지 않고, index만 사용)
-          // _ : 현재 배열 요소 (여기서는 필요 없음)
-          // index : 현재 반복 중인 번호 (0~10), key와 id로 사용
           <PostCard
-            key={`postId-${index}`} // [중요] map 사용 시 key prop 필수
-            id={`postId-${index}`} // 각 게시글 카드의 고유 id
-            title="What is the best productivity tool?" // 게시글 제목
-            author="Jonathan" // 작성자 이름
-            authorAvatarUrl="" // 작성자 아바타 URL (아직 비어 있음)
-            category="Productivity" // 게시글 카테고리
-            postedAt="12 hours ago" // 게시글 작성 시간
+            key={`postId-${index}`}
+            id={`postId-${index}`}
+            title="What is the best productivity tool?"
+            author="Jonathan"
+            authorAvatarUrl=""
+            category="Productivity"
+            postedAt="12 hours ago"
           />
         ))}
       </div>
 
-      {/* --- IdeasGPT 섹션 --- */}
+      {/* ==================================================
+          💡 IdeasGPT 섹션
+          ================================================== */}
       <div className="grid grid-cols-3 gap-4">
         {/* 왼쪽 첫 번째 컬럼: 섹션 타이틀과 설명 문구 */}
         <div>
@@ -100,8 +102,7 @@ export default function HomePage() {
           <p className="text-xl font-light text-foreground">
             Find your next ideas!
           </p>
-
-          {/* 'Explore All Ideas' 링크 버튼 (아이디어 전체 보기) */}
+          {/* 'Explore All Ideas' 링크 버튼 */}
           <Button variant="link" asChild className="text-lg p-0">
             <Link to="/ideas">Explore All Ideas! &rarr;</Link>
           </Button>
@@ -109,21 +110,21 @@ export default function HomePage() {
 
         {/* 오른쪽 두 번째, 세 번째 컬럼: IdeaCard 리스트 */}
         {Array.from({ length: 5 }).map((_, index) => (
-          // map 함수 내부 (_: 값은 사용하지 않고, index만 사용)
-          // _ : 현재 배열 요소 (필요 없음)
-          // index : 0~4 반복하며 key, id 등에 사용
           <IdeaCard
-            key={`ideaId-${index}`} // key prop 설정
-            id={`ideaId-${index}`} // 각 아이디어 카드 고유 id
+            key={`ideaId-${index}`}
+            id={`ideaId-${index}`}
             title="A startup that creates an AI-powered generated personal trainer, delivering customized fitness recommendations and tracking of progress using a mobile app to track workouts and progress as well as a website to manage the business."
-            viewsCount={123} // 조회 수
-            postedAt="10 hours ago" // 게시된 시간
-            likesCount={10} // 좋아요 수
-            claimed={index % 2 === 0} // 인덱스가 짝수면 Claimed 처리
+            viewsCount={123}
+            postedAt="10 hours ago"
+            likesCount={10}
+            claimed={index % 2 === 0}
           />
         ))}
       </div>
-      {/* --- Latest Jobs 섹션 --- */}
+
+      {/* ==================================================
+          🧑‍💼 Latest Jobs 섹션
+          ================================================== */}
       <div className="grid grid-cols-4 gap-4">
         {/* 왼쪽 첫 번째 컬럼: 섹션 타이틀과 설명 문구 */}
         <div>
@@ -133,8 +134,7 @@ export default function HomePage() {
           <p className="text-xl font-light text-foreground">
             Find your dream job.
           </p>
-
-          {/* 'Explore all jobs' 링크 버튼 (모든 구인 공고 보기) */}
+          {/* 'Explore all jobs' 링크 버튼 */}
           <Button variant="link" asChild className="text-lg p-0">
             <Link to="/jobs">Explore all jobs &rarr;</Link>
           </Button>
@@ -142,20 +142,17 @@ export default function HomePage() {
 
         {/* 오른쪽 세 컬럼: JobCard 리스트 */}
         {Array.from({ length: 11 }).map((_, index) => (
-          // map 함수 내부 (_: 값은 사용하지 않고, index만 사용)
-          // _ : 현재 배열 요소 (필요 없음)
-          // index : 현재 반복 중인 번호 (0~10), key와 id로 사용
           <JobCard
-            key={`jobId-${index}`} // [중요] map 사용 시 key prop 필수
-            id={`jobId-${index}`} // 각 구인 공고 카드의 고유 id
-            company="AUT" // 회사 이름
-            companyLogoUrl="https://github.com/mit.png" // 회사 로고 URL
-            companyHq="AUT University" // 회사 본사 위치
-            title="Counsellor" // 구인 공고 제목
-            postedAt="9 hours ago" // 공고 게시 시간
-            type="Full-time" // 고용 형태
-            positionLocation="Remote" // 근무 위치
-            salary="$90,000 - $120,000" // 연봉 범위
+            key={`jobId-${index}`}
+            id={`jobId-${index}`}
+            company="AUT"
+            companyLogoUrl="https://github.com/mit.png"
+            companyHq="AUT University"
+            title="Counsellor"
+            postedAt="9 hours ago"
+            type="Full-time"
+            positionLocation="Remote"
+            salary="$90,000 - $120,000"
           />
         ))}
       </div>
