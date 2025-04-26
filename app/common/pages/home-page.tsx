@@ -123,7 +123,9 @@ export default function HomePage() {
           />
         ))}
       </div>
+      {/* --- Latest Jobs 섹션 --- */}
       <div className="grid grid-cols-4 gap-4">
+        {/* 왼쪽 첫 번째 컬럼: 섹션 타이틀과 설명 문구 */}
         <div>
           <h2 className="text-5xl font-bold leading-tight tracking-tight">
             Latest Jobs
@@ -131,22 +133,29 @@ export default function HomePage() {
           <p className="text-xl font-light text-foreground">
             Find your dream job.
           </p>
+
+          {/* 'Explore all jobs' 링크 버튼 (모든 구인 공고 보기) */}
           <Button variant="link" asChild className="text-lg p-0">
             <Link to="/jobs">Explore all jobs &rarr;</Link>
           </Button>
         </div>
+
+        {/* 오른쪽 세 컬럼: JobCard 리스트 */}
         {Array.from({ length: 11 }).map((_, index) => (
+          // map 함수 내부 (_: 값은 사용하지 않고, index만 사용)
+          // _ : 현재 배열 요소 (필요 없음)
+          // index : 현재 반복 중인 번호 (0~10), key와 id로 사용
           <JobCard
-            key={`jobId-${index}`}
-            id={`jobId-${index}`}
-            company="AUT"
-            companyLogoUrl="https://github.com/mit.png"
-            companyHq="AUT University"
-            title="Counsellor"
-            postedAt="9 hours ago"
-            type="Full-time"
-            positionLocation="Remote"
-            salary="$90,000 - $120,000"
+            key={`jobId-${index}`} // [중요] map 사용 시 key prop 필수
+            id={`jobId-${index}`} // 각 구인 공고 카드의 고유 id
+            company="AUT" // 회사 이름
+            companyLogoUrl="https://github.com/mit.png" // 회사 로고 URL
+            companyHq="AUT University" // 회사 본사 위치
+            title="Counsellor" // 구인 공고 제목
+            postedAt="9 hours ago" // 공고 게시 시간
+            type="Full-time" // 고용 형태
+            positionLocation="Remote" // 근무 위치
+            salary="$90,000 - $120,000" // 연봉 범위
           />
         ))}
       </div>
