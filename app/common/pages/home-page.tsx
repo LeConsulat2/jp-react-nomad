@@ -58,8 +58,8 @@ export default function HomePage() {
           <PostCard
             id={`postId-${index}`}
             title="What is the best productivity tool?"
-            author="Nico"
-            authorAvatarUrl="https://github.com/apple.png"
+            author="Jonathan"
+            authorAvatarUrl=""
             category="Productivity"
             postedAt="12 hours ago"
           />
