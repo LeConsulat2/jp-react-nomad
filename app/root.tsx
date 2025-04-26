@@ -11,6 +11,9 @@ import type { Route } from './+types/root';
 import './app.css';
 import Navigation from './common/components/navigation';
 
+// ==================================================
+// 🌐 글로벌 링크 설정 (Google Fonts 연결)
+// ==================================================
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
@@ -24,6 +27,9 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+// ==================================================
+// 🖼️ Layout 컴포넌트 (HTML 전체 레이아웃 구성)
+// ==================================================
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
@@ -42,6 +48,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+// ==================================================
+// 🏡 App 컴포넌트 (메인 아웃렛 + 네비게이션)
+// ==================================================
 export default function App() {
   return (
     <div className="py-32">
@@ -50,11 +59,14 @@ export default function App() {
         hasNotifications={true}
         hasMessages={true}
       />
-      <Outlet />;
+      <Outlet />
     </div>
   );
 }
 
+// ==================================================
+// ❗ ErrorBoundary 컴포넌트 (라우터 에러 핸들링)
+// ==================================================
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = 'Oops!';
   let details = 'An unexpected error occurred.';
