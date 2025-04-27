@@ -3,8 +3,8 @@ import { ProductCard } from '~/features/products/components/product-card';
 import { Button } from '../components/ui/button';
 import { PostCard } from '~/features/products/components/post-card';
 import { IdeaCard } from '~/features/products/components/idea-card';
-import { index } from '@react-router/dev/routes';
 import { JobCard } from '~/features/products/components/job-card';
+import { TeamCard } from '~/features/products/components/team-card';
 
 // ==================================================
 // 🌐 메타데이터 설정
@@ -22,7 +22,7 @@ export const meta: MetaFunction = () => {
 // 🏠 HomePage 컴포넌트
 // ==================================================
 // 메인 홈페이지 화면을 구성하는 컴포넌트입니다.
-// 'Today's Products', 'Latest Discussions', 'IdeasGPT', 'Latest Jobs' 네 가지 섹션으로 구성합니다.
+// 'Today's Products', 'Latest Discussions', 'IdeasGPT', 'Latest Jobs', 'Find a Team Crew' 다섯 가지 섹션으로 구성합니다.
 export default function HomePage() {
   return (
     // 전체 레이아웃을 감싸는 최상위 div입니다.
@@ -153,6 +153,41 @@ export default function HomePage() {
             type="Full-time"
             positionLocation="Remote"
             salary="$90,000 - $120,000"
+          />
+        ))}
+      </div>
+
+      {/* ==================================================
+          👥 Find a Team Crew 섹션
+          ================================================== */}
+      <div className="grid grid-cols-4 gap-4">
+        {/* 왼쪽 첫 번째 컬럼: 섹션 타이틀과 설명 문구 */}
+        <div>
+          <h2 className="text-5xl font-bold leading-tight tracking-tight">
+            Find a team crew
+          </h2>
+          <p className="text-xl font-light text-foreground">
+            Browse and join a group
+          </p>
+          {/* 'Discover all initiatives' 링크 버튼 */}
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/teams">Discover all initiatives & teams</Link>
+          </Button>
+        </div>
+
+        {/* 오른쪽 세 컬럼: TeamCard 리스트 */}
+        {Array.from({ length: 3 }).map((_, index) => (
+          <TeamCard
+            key={`teamId-${index}`}
+            id={`teamId-${index}`}
+            leaderUsername="Jin"
+            leaderAvatarUrl=""
+            positions={[
+              'Counsellor',
+              'Occupational Therapist',
+              'Physiotherapist',
+            ]}
+            projectDescription="Creating and contributing platform"
           />
         ))}
       </div>
