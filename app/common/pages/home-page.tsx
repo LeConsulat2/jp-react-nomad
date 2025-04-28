@@ -1,29 +1,31 @@
-import { Link, type MetaFunction } from 'react-router';
+import { Link, type MetaFunction, type LoaderFunctionArgs } from 'react-router';
+
 import { ProductCard } from '~/features/products/components/product-card';
 import { Button } from '../components/ui/button';
 import { PostCard } from '~/features/products/components/post-card';
 import { IdeaCard } from '~/features/products/components/idea-card';
 import { JobCard } from '~/features/products/components/job-card';
 import { TeamCard } from '~/features/products/components/team-card';
+import type { ComponentProps } from 'react'; // Using React.ComponentProps as placeholder
+import type { Route } from './+types/home-page';
 
 // ==================================================
 // 🌐 메타데이터 설정
 // ==================================================
-// 페이지의 <head> 영역에 들어갈 메타 정보를 설정하는 함수입니다.
-// 주로 SEO(검색엔진 최적화)와 브라우저 탭 제목을 설정하는 데 사용합니다.
-export const meta: MetaFunction = () => {
+export function meta(): ReturnType<MetaFunction> {
+  // Use standard MetaFunction return type
   return [
-    { title: 'Home | We-Create' }, // 브라우저 탭에 표시될 페이지 제목
-    { name: 'description', content: 'Welcome to We-Create' }, // 검색 엔진에 노출될 페이지 설명
+    { title: 'Home | We-Create' },
+    { name: 'description', content: 'Welcome to We-Create' },
   ];
-};
+}
 
 // ==================================================
 // 🏠 HomePage 컴포넌트
 // ==================================================
-// 메인 홈페이지 화면을 구성하는 컴포넌트입니다.
-// 'Today's Products', 'Latest Discussions', 'IdeasGPT', 'Latest Jobs', 'Find a Team Crew' 다섯 가지 섹션으로 구성합니다.
-export default function HomePage() {
+export default function HomePage({ loaderData }: Route.ComponentProps) {
+  // Use placeholder ComponentProps
+  // Default export, use Route.ComponentProps
   return (
     // 전체 레이아웃을 감싸는 최상위 div입니다.
     // 좌우 여백을 'px-20', 섹션 간 간격을 'space-y-40'으로 설정합니다.
@@ -193,6 +195,12 @@ export default function HomePage() {
       </div>
     </div>
   );
+}
+
+export function loader({ request }: LoaderFunctionArgs) {
+  // Implement your loader logic here
+  console.log('Home Page Loader Request:', request);
+  return {};
 }
 
 /* 

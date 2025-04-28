@@ -258,7 +258,7 @@ export default function Navigation({
                 <DropdownMenuItem asChild className="cursor-pointer">
                   <Link to="/my/dashboard">
                     <BarChart3Icon className="size-4 mr-2" />
-                    Dashboard
+                    dashboard
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="cursor-pointer">
