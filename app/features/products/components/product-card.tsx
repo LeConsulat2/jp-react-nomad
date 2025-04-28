@@ -29,7 +29,7 @@ export function ProductCard({
 }: ProductCardProps) {
   return (
     // Link: 클릭 시 `/products/{id}` 경로로 이동합니다.
-    <Link to={`/products/${id}`}>
+    <Link to={`/products/${id}`} className="block">
       {/* Card: 간격, 배경, hover 효과가 적용된 컨테이너 */}
       <Card className="w-full flex items-center justify-between bg-transparent hover:bg-card/50 transition-colors">
         {/* CardHeader: 제목, 설명, 통계(댓글/조회)를 담는 부분 */}

@@ -1,7 +1,11 @@
 import { DateTime } from 'luxon';
 import type { Route } from './+types/daily-leaderboard-page';
-import { data, isRouteErrorResponse } from 'react-router';
-import { z } from 'zod';
+import { data, isRouteErrorResponse, Link } from 'react-router';
+import { date, z } from 'zod';
+import { Hero } from '~/common/components/Hero';
+import { ProductCard } from '../components/product-card';
+import { Button } from '~/common/components/ui/button';
+import ProductPagination from '~/common/components/product-pagination';
 
 const paramsSchema = z.object({
   year: z.coerce.number(),
@@ -20,7 +24,10 @@ export const loader = ({ params }: Route.LoaderArgs) => {
       { status: 400 },
     );
   }
-  const date = DateTime.fromObject(parsedData).setZone('Asia/Seoul');
+  const date = DateTime.fromObject(parsedData, {
+    zone: 'Pacific/Auckland',
+    locale: 'en-nz',
+  });
   if (!date.isValid) {
     throw data(
       {
@@ -32,7 +39,7 @@ export const loader = ({ params }: Route.LoaderArgs) => {
       },
     );
   }
-  const today = DateTime.now().setZone('Asia/Seoul').startOf('day');
+  const today = DateTime.now().setZone('Pacific/Auckland').startOf('day');
   if (date > today) {
     throw data(
       {
@@ -43,14 +50,63 @@ export const loader = ({ params }: Route.LoaderArgs) => {
     );
   }
   return {
-    date,
+    ...parsedData,
   };
 };
 
 export default function DailyLeaderboardPage({
   loaderData,
 }: Route.ComponentProps) {
-  return <div className="container mx-auto px-4 py-8"></div>;
+  const urlDate = DateTime.fromObject({
+    year: loaderData.year,
+    month: loaderData.month,
+    day: loaderData.day,
+  });
+  const previousDay = urlDate.minus({ days: 1 });
+  const nextDay = urlDate.plus({ days: 1 });
+  const isToday = urlDate.equals(DateTime.now().startOf('day'));
+  return (
+    <div className="space-y-5">
+      <Hero
+        title={`The best of Portfolios ${urlDate.toLocaleString(
+          DateTime.DATE_MED,
+        )}`}
+      />
+      <div className="flex items-center justify-center gap-2 ">
+        <Button variant="outline" asChild>
+          <Link
+            to={`/products/leaderboards/daily/${previousDay.year}/${previousDay.month}/${previousDay.day}`}
+          >
+            &larr; {previousDay.toLocaleString(DateTime.DATE_MED)}
+          </Link>
+        </Button>
+        {!isToday! ? (
+          <Button variant="outline">
+            <Link
+              to={`/products/leaderboards/daily/${nextDay.year}/${nextDay.month}/${nextDay.day}`}
+            >
+              {nextDay.toLocaleString(DateTime.DATE_MED)} &rarr;
+            </Link>
+          </Button>
+        ) : null}
+      </div>
+
+      <div className="space-y-5 w-full max-w-screen-md mx-auto">
+        {Array.from({ length: 11 }).map((_, index) => (
+          <ProductCard
+            key={`productId-${index}`}
+            id={`productId-${index}`}
+            name="Portfolio Name"
+            description="Portfolio Description"
+            commentsCount={10}
+            viewsCount={12}
+            votesCount={100}
+          />
+        ))}
+      </div>
+      <ProductPagination totalPages={11} />
+    </div>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

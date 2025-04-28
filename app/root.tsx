@@ -10,6 +10,7 @@ import {
 import type { Route } from './+types/root';
 import './app.css';
 import Navigation from './common/components/navigation';
+import { Settings } from 'luxon';
 
 // ==================================================
 // 🌐 글로벌 링크 설정 (Google Fonts 연결)
@@ -31,6 +32,8 @@ export const links: Route.LinksFunction = () => [
 // 🖼️ Layout 컴포넌트 (HTML 전체 레이아웃 구성)
 // ==================================================
 export function Layout({ children }: { children: React.ReactNode }) {
+  Settings.defaultLocale = 'en';
+  Settings.defaultZone = 'Pacific/Auckland';
   return (
     <html lang="en" className="dark">
       <head>
