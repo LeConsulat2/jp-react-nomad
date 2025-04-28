@@ -1,50 +1,68 @@
-import type { Route } from '../../../../+types/features/products/pages/daily-leaderboard-page';
-import type { MetaFunction } from 'react-router';
-import { Link } from 'react-router';
+import { DateTime } from 'luxon';
+import type { Route } from './+types/daily-leaderboard-page';
+import { data, isRouteErrorResponse } from 'react-router';
+import { z } from 'zod';
 
-export function meta(): MetaFunction {
-  return [
-    { title: 'Daily Leaderboard | ProductHunt Clone' },
-    { name: 'description', content: 'Daily product leaderboard' },
-  ];
-}
+const paramsSchema = z.object({
+  year: z.coerce.number(),
+  month: z.coerce.number(),
+  day: z.coerce.number(),
+});
 
-export function loader({ request, params }: Route.LoaderArgs) {
-  const { year, month, day } = params;
-
+export const loader = ({ params }: Route.LoaderArgs) => {
+  const { success, data: parsedData } = paramsSchema.safeParse(params);
+  if (!success) {
+    throw data(
+      {
+        error_code: 'invalid_params',
+        message: 'Invalid params',
+      },
+      { status: 400 },
+    );
+  }
+  const date = DateTime.fromObject(parsedData).setZone('Asia/Seoul');
+  if (!date.isValid) {
+    throw data(
+      {
+        error_code: 'invalid_date',
+        message: 'Invalid date',
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+  const today = DateTime.now().setZone('Asia/Seoul').startOf('day');
+  if (date > today) {
+    throw data(
+      {
+        error_code: 'future_date',
+        message: 'Future date',
+      },
+      { status: 400 },
+    );
+  }
   return {
-    year,
-    month,
-    day,
-    products: [], // Add daily products fetch logic
+    date,
   };
-}
-
-export function action({ request }: Route.ActionArgs) {
-  return {};
-}
+};
 
 export default function DailyLeaderboardPage({
   loaderData,
 }: Route.ComponentProps) {
-  const { year, month, day, products } = loaderData;
+  return <div className="container mx-auto px-4 py-8"></div>;
+}
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">
-        Daily Leaderboard - {month}/{day}/{year}
-      </h1>
-
-      <div className="mb-6">
-        <Link
-          to="/products/leaderboards"
-          className="text-blue-600 hover:underline"
-        >
-          ← Back to Leaderboards
-        </Link>
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        {error.data.message} / {error.data.error_code}
       </div>
-
-      <div className="space-y-4">{/* Products list will go here */}</div>
-    </div>
-  );
+    );
+  }
+  if (error instanceof Error) {
+    return <div>{error.message}</div>;
+  }
+  return <div>Unknown error</div>;
 }
