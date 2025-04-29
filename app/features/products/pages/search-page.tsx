@@ -43,8 +43,8 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <Hero
-        title="Search Products"
-        subtitle="Search for products by title or description"
+        title="Search Portfolios"
+        subtitle="Search for Portfolios by title or description"
       />
 
       {/* Search Bar */}
