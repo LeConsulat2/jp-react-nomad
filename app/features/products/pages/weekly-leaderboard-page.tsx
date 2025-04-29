@@ -12,6 +12,24 @@ const paramsSchema = z.object({
   week: z.coerce.number(),
 });
 
+export const meta: Route.MetaFunction = ({ params }) => {
+  const date = DateTime.fromObject({
+    weekYear: Number(params.year),
+    weekNumber: Number(params.week),
+  })
+    .setZone('Pacific/Auckland')
+    .setLocale('en-nz');
+  return [
+    {
+      title: `The best portfolios of ${date
+        .startOf('week')
+        .toLocaleString(DateTime.DATE_MED)} - ${date
+        .endOf('week')
+        .toLocaleString(DateTime.DATE_MED)} | We-Create`,
+    },
+  ];
+};
+
 export const loader = ({ params }: Route.LoaderArgs) => {
   const { success, data: parsedData } = paramsSchema.safeParse(params);
   if (!success) {
