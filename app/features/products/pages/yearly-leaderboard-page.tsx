@@ -24,7 +24,9 @@ export const loader = ({ params }: Route.LoaderArgs) => {
   }
   const date = DateTime.fromObject({
     year: parsedData.year,
-  }).setZone('Asia/Seoul');
+  })
+    .setZone('Pacific/Auckland')
+    .setLocale('en-nz');
   if (!date.isValid) {
     throw data(
       {
@@ -36,7 +38,7 @@ export const loader = ({ params }: Route.LoaderArgs) => {
       },
     );
   }
-  const today = DateTime.now().setZone('Asia/Seoul').startOf('year');
+  const today = DateTime.now().setZone('Pacific/Auckland').startOf('year');
   if (date > today) {
     throw data(
       {

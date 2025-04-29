@@ -79,7 +79,7 @@ export default function WeeklyLeaderboardPage({
       <div className="flex items-center justify-center gap-2 ">
         <Button variant="outline" asChild>
           <Link
-            to={`/products/leaderboards/weekly/${previousWeek.year}/${previousWeek.weekNumber}`}
+            to={`/products/leaderboards/weekly/${previousWeek.weekYear}/${previousWeek.weekNumber}`}
           >
             &larr; {previousWeek.toLocaleString(DateTime.DATE_MED)}
           </Link>
