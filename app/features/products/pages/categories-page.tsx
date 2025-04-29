@@ -1,15 +1,8 @@
 import type { Route } from './+types/categories-page';
 import { Link } from 'react-router';
 import { Hero } from '~/common/components/Hero';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '~/common/components/ui/card';
 import { Button } from '~/common/components/ui/button';
 import {
-  ArrowRight,
   Code,
   Image,
   Layout,
@@ -20,6 +13,7 @@ import {
   Briefcase,
   HeartPulse,
 } from 'lucide-react';
+import { CategoryCard } from '../components/category-card';
 
 export const meta: Route.MetaFunction = () => [
   { title: 'Categories | We-Create' },
@@ -60,41 +54,15 @@ export default function CategoriesPage({ loaderData }: Route.ComponentProps) {
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-          {categories.map((category) => {
-            const Icon = category.icon;
-
-            return (
-              <Link
-                to={`/products/categories/${category.id}`}
-                key={category.id}
-                className="block transform transition-all hover:scale-105"
-              >
-                <Card className="h-full border-2 hover:border-primary overflow-hidden">
-                  <CardHeader className="bg-muted/30 pb-4">
-                    <div className="flex justify-center p-4">
-                      <div className="rounded-full bg-gradient-to-tr from-primary/20 to-background/30 p-6">
-                        <Icon className="size-8 text-primary" />
-                      </div>
-                    </div>
-                  </CardHeader>
-
-                  <CardContent className="pt-4 text-center">
-                    <h2 className="text-xl font-semibold">{category.name}</h2>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {category.count} products
-                    </p>
-                  </CardContent>
-
-                  <CardFooter className="flex justify-center pb-4">
-                    <Button variant="ghost" size="sm" className="group">
-                      Browse{' '}
-                      <ArrowRight className="ml-1 size-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </Link>
-            );
-          })}
+          {categories.map((category) => (
+            <CategoryCard
+              key={category.id}
+              id={category.id}
+              name={category.name}
+              icon={category.icon}
+              count={category.count}
+            />
+          ))}
         </div>
 
         <div className="flex justify-center">
