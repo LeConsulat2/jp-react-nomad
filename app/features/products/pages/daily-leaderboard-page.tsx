@@ -104,7 +104,7 @@ export default function DailyLeaderboardPage({
           />
         ))}
       </div>
-      <ProductPagination totalPages={11} />
+      <ProductPagination totalPages={10} />
     </div>
   );
 }
