@@ -1,64 +1,94 @@
-import type { Route } from '../../../../+types/features/products/pages/search-page';
-import type { MetaFunction } from 'react-router';
-import { Form } from 'react-router';
+import { data, Form } from 'react-router';
+import { z } from 'zod';
+import type { Route } from './+types/search-page';
+import { Hero } from '~/common/components/Hero';
+import { Button } from '~/common/components/ui/button';
+import { Input } from '~/common/components/ui/input';
+import { Search } from 'lucide-react';
+import { ProductCard } from '../components/product-card';
+import ProductPagination from '~/common/components/product-pagination';
 
-export function meta(): MetaFunction {
+export const meta: Route.MetaFunction = () => {
   return [
     { title: 'Search Products | ProductHunt Clone' },
     { name: 'description', content: 'Search for products' },
   ];
-}
+};
+
+const paramsSchema = z.object({
+  query: z.string().optional().default(''),
+  page: z.coerce.number().optional().default(1),
+});
 
 export function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
-  const query = url.searchParams.get('q') || '';
-
-  return {
-    query,
-    results: [], // Add search results fetch logic
-  };
-}
-
-export function action({ request }: Route.ActionArgs) {
-  return {};
+  const { success, data: parseData } = paramsSchema.safeParse(
+    Object.fromEntries(url.searchParams),
+  );
+  if (!success) {
+    throw data(
+      {
+        error_code: 'invalid_params',
+        message: 'Invalid params',
+      },
+      {
+        status: 400,
+      },
+    );
+  }
 }
 
 export default function SearchPage({ loaderData }: Route.ComponentProps) {
-  const { query, results } = loaderData;
-
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Search Products</h1>
+      {/* Hero Section */}
+      <Hero
+        title="Search Products"
+        subtitle="Search for products by title or description"
+      />
 
-      <Form method="get" className="mb-8">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            name="q"
-            defaultValue={query}
-            className="flex-1 px-4 py-2 border rounded-md"
-            placeholder="Search for products..."
-          />
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Search
-          </button>
-        </div>
-      </Form>
-
-      {query && (
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Results for "{query}"</h2>
-          <div className="space-y-4">
-            {/* Search results will go here */}
-            {results.length === 0 && (
-              <p>No products found matching your search.</p>
-            )}
+      {/* Search Bar */}
+      <div className="mt-8 flex justify-center">
+        <Form method="get" className="w-full max-w-2xl">
+          <div className="bg-card rounded-2xl shadow-md p-6 flex gap-4">
+            <div className="relative flex-1">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+                <Search className="w-5 h-5" />
+              </span>
+              <Input
+                type="text"
+                name="query"
+                className="pl-10 pr-4 py-2 text-base focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                placeholder="Search for portfolios..."
+                autoComplete="off"
+              />
+            </div>
+            <Button type="submit" className="text-base px-6 py-2 rounded-md">
+              Search
+            </Button>
           </div>
-        </div>
-      )}
+        </Form>
+      </div>
+
+      {/* Search Results */}
+      <div className="mt-10 space-y-6 w-full max-w-4xl mx-auto">
+        {Array.from({ length: 11 }).map((_, index) => (
+          <ProductCard
+            key={`productId-${index}`}
+            id={`productId-${index}`}
+            name="Portfolio Name"
+            description="Portfolio Description"
+            commentsCount={5}
+            viewsCount={1000}
+            votesCount={100}
+          />
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-12 flex justify-center">
+        <ProductPagination totalPages={9} />
+      </div>
     </div>
   );
 }
