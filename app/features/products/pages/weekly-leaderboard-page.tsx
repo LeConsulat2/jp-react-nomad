@@ -1,49 +1,128 @@
-import type { Route } from '../../../../+types/features/products/pages/weekly-leaderboard-page';
-import type { MetaFunction } from 'react-router';
-import { Link } from 'react-router';
+import { DateTime } from 'luxon';
+import type { Route } from './+types/weekly-leaderboard-page';
+import { data, isRouteErrorResponse, Link } from 'react-router';
+import { z } from 'zod';
+import { Hero } from '~/common/components/Hero';
+import { ProductCard } from '../components/product-card';
+import { Button } from '~/common/components/ui/button';
+import ProductPagination from '~/common/components/product-pagination';
 
-export function meta(): MetaFunction {
-  return [
-    { title: 'Weekly Leaderboard | ProductHunt Clone' },
-    { name: 'description', content: 'Weekly product leaderboard' },
-  ];
-}
+const paramsSchema = z.object({
+  year: z.coerce.number(),
+  week: z.coerce.number(),
+});
 
-export function loader({ request, params }: Route.LoaderArgs) {
-  const { year, week } = params;
-
+export const loader = ({ params }: Route.LoaderArgs) => {
+  const { success, data: parsedData } = paramsSchema.safeParse(params);
+  if (!success) {
+    throw data(
+      {
+        error_code: 'invalid_params',
+        message: 'Invalid params',
+      },
+      { status: 400 },
+    );
+  }
+  const date = DateTime.fromObject({
+    weekYear: parsedData.year,
+    weekNumber: parsedData.week,
+  })
+    .setZone('Pacific/Auckland')
+    .setLocale('en-nz');
+  if (!date.isValid) {
+    throw data(
+      {
+        error_code: 'invalid_date',
+        message: 'Invalid date',
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+  const today = DateTime.now().setZone('Pacific/Auckland').startOf('week');
+  if (date > today) {
+    throw data(
+      {
+        error_code: 'future_date',
+        message: 'Future date',
+      },
+      { status: 400 },
+    );
+  }
   return {
-    year,
-    week,
-    products: [], // Add weekly products fetch logic
+    ...parsedData,
   };
-}
-
-export function action({ request }: Route.ActionArgs) {
-  return {};
-}
+};
 
 export default function WeeklyLeaderboardPage({
   loaderData,
 }: Route.ComponentProps) {
-  const { year, week, products } = loaderData;
-
+  const urlDate = DateTime.fromObject({
+    weekYear: loaderData.year,
+    weekNumber: loaderData.week,
+  });
+  const previousWeek = urlDate.minus({ weeks: 1 });
+  const nextWeek = urlDate.plus({ weeks: 1 });
+  const isToday = urlDate.equals(
+    DateTime.now().setZone('Pacific/Auckland').startOf('week'),
+  );
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">
-        Weekly Leaderboard - Week {week}, {year}
-      </h1>
-
-      <div className="mb-6">
-        <Link
-          to="/products/leaderboards"
-          className="text-blue-600 hover:underline"
-        >
-          ← Back to Leaderboards
-        </Link>
+    <div className="space-y-5">
+      <Hero
+        title={`The best Portfolios of ${urlDate
+          .startOf('week')
+          .toLocaleString(DateTime.DATE_SHORT)} - ${urlDate
+          .endOf('week')
+          .toLocaleString(DateTime.DATE_SHORT)}}`}
+      />
+      <div className="flex items-center justify-center gap-2 ">
+        <Button variant="outline" asChild>
+          <Link
+            to={`/products/leaderboards/weekly/${previousWeek.year}/${previousWeek.weekNumber}`}
+          >
+            &larr; {previousWeek.toLocaleString(DateTime.DATE_MED)}
+          </Link>
+        </Button>
+        {!isToday ? (
+          <Button variant="outline" asChild>
+            <Link
+              to={`/products/leaderboards/weekly/${nextWeek.year}/${nextWeek.weekNumber}`}
+            >
+              {nextWeek.toLocaleString(DateTime.DATE_MED)} &rarr;
+            </Link>
+          </Button>
+        ) : null}
       </div>
 
-      <div className="space-y-4">{/* Products list will go here */}</div>
+      <div className="space-y-5 w-full max-w-screen-md mx-auto">
+        {Array.from({ length: 11 }).map((_, index) => (
+          <ProductCard
+            key={`productId-${index}`}
+            id={`productId-${index}`}
+            name="Portfolio Name"
+            description="Portfolio Description"
+            commentsCount={10}
+            viewsCount={12}
+            votesCount={100}
+          />
+        ))}
+      </div>
+      <ProductPagination totalPages={10} />
     </div>
   );
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        {error.data.message} / {error.data.error_code}
+      </div>
+    );
+  }
+  if (error instanceof Error) {
+    return <div>{error.message}</div>;
+  }
+  return <div>Unknown error</div>;
 }

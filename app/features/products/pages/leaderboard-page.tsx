@@ -40,7 +40,7 @@ export default function LeaderboardPage() {
         ))}
         <Button variant="link" asChild className="text-lg self-center">
           <Link to="/products/leaderboards/daily">
-            Explore all products &rarr;
+            Explore daily portfolios & ideas &rarr;
           </Link>
         </Button>
       </div>
@@ -50,7 +50,7 @@ export default function LeaderboardPage() {
             Weekly Leaderboard
           </h2>
           <p className="text-xl font-light text-foreground">
-            The most popular products on wemake by week.
+            The most popular ideas on We-Create by week.
           </p>
         </div>
         {Array.from({ length: 7 }).map((_, index) => (
@@ -66,7 +66,7 @@ export default function LeaderboardPage() {
         ))}
         <Button variant="link" asChild className="text-lg self-center">
           <Link to="/products/leaderboards/weekly">
-            Explore all products &rarr;
+            Explore all portfolios & ideas &rarr;
           </Link>
         </Button>
       </div>
@@ -76,7 +76,7 @@ export default function LeaderboardPage() {
             Monthly Leaderboard
           </h2>
           <p className="text-xl font-light text-foreground">
-            The most popular products on wemake by month.
+            The most popular ideas on We-Create by month.
           </p>
         </div>
         {Array.from({ length: 7 }).map((_, index) => (
@@ -102,7 +102,7 @@ export default function LeaderboardPage() {
             Yearly Leaderboard
           </h2>
           <p className="text-xl font-light text-foreground">
-            The most popular products on wemake by year.
+            The most popular ideas on We-Create by year.
           </p>
         </div>
         {Array.from({ length: 7 }).map((_, index) => (
@@ -118,7 +118,7 @@ export default function LeaderboardPage() {
         ))}
         <Button variant="link" asChild className="text-lg self-center">
           <Link to="/products/leaderboards/yearly">
-            Explore all products &rarr;
+            Explore all portfolios & ideas &rarr;
           </Link>
         </Button>
       </div>

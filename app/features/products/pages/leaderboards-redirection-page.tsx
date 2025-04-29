@@ -5,11 +5,11 @@ import { DateTime } from 'luxon';
 export function loader({ params, request }: Route.LoaderArgs) {
   const { period } = params;
   let url: string;
-  const today = DateTime.now().setZone('Pacific/Auckland');
+  const today = DateTime.now().setZone('Pacific/Auckland').setLocale('en-nz');
   if (period === 'daily') {
     url = `/products/leaderboards/daily/${today.year}/${today.month}/${today.day}`;
   } else if (period === 'weekly') {
-    url = `products/leaderboards/weekly/${today.year}/${today.month}/${today.weekNumber}`;
+    url = `/products/leaderboards/weekly/${today.year}/${today.weekNumber}`;
   } else if (period === 'monthly') {
     url = `/products/leaderboards/monthly/${today.year}/${today.month}`;
   } else if (period === 'yearly') {

@@ -17,18 +17,16 @@ export default function ProductPagination({
   totalPages,
 }: ProductPaginationProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const page = Number(searchParams.get('page')) || 1;
-
+  const page = Number(searchParams.get('page') ?? 1);
   const onClick = (page: number) => {
     searchParams.set('page', page.toString());
     setSearchParams(searchParams);
   };
-
   return (
     <div>
       <Pagination>
         <PaginationContent>
-          {page > 1 && (
+          {page === 1 ? null : (
             <>
               <PaginationItem>
                 <PaginationPrevious
@@ -39,7 +37,6 @@ export default function ProductPagination({
                   }}
                 />
               </PaginationItem>
-
               <PaginationItem>
                 <PaginationLink
                   to={`?page=${page - 1}`}
@@ -53,7 +50,6 @@ export default function ProductPagination({
               </PaginationItem>
             </>
           )}
-
           <PaginationItem>
             <PaginationLink
               to={`?page=${page}`}
@@ -66,8 +62,7 @@ export default function ProductPagination({
               {page}
             </PaginationLink>
           </PaginationItem>
-
-          {page < totalPages && (
+          {page === totalPages ? null : (
             <>
               <PaginationItem>
                 <PaginationLink
@@ -80,14 +75,11 @@ export default function ProductPagination({
                   {page + 1}
                 </PaginationLink>
               </PaginationItem>
-
-              {/* only show Ellipsis if page+1 is not last */}
-              {page + 1 < totalPages && (
+              {page + 1 === totalPages ? null : (
                 <PaginationItem>
                   <PaginationEllipsis />
                 </PaginationItem>
               )}
-
               <PaginationItem>
                 <PaginationNext
                   to={`?page=${page + 1}`}
