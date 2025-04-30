@@ -1,11 +1,11 @@
-import type { Route } from '../../../../+types/features/products/pages/submit-page';
-import type { MetaFunction } from 'react-router';
 import { Form } from 'react-router';
+import type { Route } from './+types/categories-page';
+import { Hero } from '~/common/components/Hero';
 
-export function meta(): MetaFunction {
-  return [
-    { title: 'Submit Product | ProductHunt Clone' },
-    { name: 'description', content: 'Submit your product' },
+export function meta(): Route.MetaFunction {
+  const meta: Route.MetaFunction = () => [
+    { title: 'Submit Idea | We-Create' },
+    { name: 'description', content: 'Submit your idea' },
   ];
 }
 
@@ -15,79 +15,81 @@ export function loader({ request }: Route.LoaderArgs) {
   };
 }
 
-export function action({ request }: Route.ActionArgs) {
-  // Handle form submission
-  return {
-    success: false,
-    errors: {
-      // Add form validation logic
-    },
-  };
-}
-
 export default function SubmitPage({
   loaderData,
   actionData,
 }: Route.ComponentProps) {
-  const { categories } = loaderData;
-  const errors = actionData?.errors || {};
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Submit Your Product</h1>
+    <div className="container mx-auto px-4 py-12">
+      <Hero
+        title="Submit Your Product"
+        subtitle="Showcase your idea to the We-Create community"
+      />
 
-      <Form method="post" className="max-w-2xl space-y-6">
-        <div>
-          <label className="block mb-2 font-medium">Product Name</label>
+      <Form
+        method="post"
+        className="mt-10 max-w-2xl mx-auto bg-card shadow-xl rounded-2xl p-8 space-y-6 border border-border"
+      >
+        <div className="grid gap-1">
+          <label
+            htmlFor="name"
+            className="text-sm font-medium text-muted-foreground"
+          >
+            Product Name
+          </label>
           <input
-            type="text"
+            id="name"
             name="name"
-            className="w-full px-4 py-2 border rounded-md"
+            type="text"
+            className="input border bg-background border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition"
+            placeholder="e.g. Productivity Pulse"
+            required
           />
-          {errors.name && <p className="text-red-600 mt-1">{errors.name}</p>}
         </div>
 
-        <div>
-          <label className="block mb-2 font-medium">Description</label>
-          <textarea
-            name="description"
-            className="w-full px-4 py-2 border rounded-md h-32"
-          />
-          {errors.description && (
-            <p className="text-red-600 mt-1">{errors.description}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block mb-2 font-medium">Category</label>
+        <div className="grid gap-1">
+          <label
+            htmlFor="category"
+            className="text-sm font-medium text-muted-foreground"
+          >
+            Category
+          </label>
           <select
+            id="category"
             name="category"
-            className="w-full px-4 py-2 border rounded-md"
+            className="input border bg-background border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition"
+            required
           >
             <option value="">Select a category</option>
-            {/* Add category options */}
+            {/* Dynamically insert category options here */}
           </select>
-          {errors.category && (
-            <p className="text-red-600 mt-1">{errors.category}</p>
-          )}
         </div>
 
-        <div>
-          <label className="block mb-2 font-medium">Product URL</label>
+        <div className="grid gap-1">
+          <label
+            htmlFor="url"
+            className="text-sm font-medium text-muted-foreground"
+          >
+            Product URL
+          </label>
           <input
-            type="url"
+            id="url"
             name="url"
-            className="w-full px-4 py-2 border rounded-md"
+            type="url"
+            className="input border bg-background border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition"
+            placeholder="https://yourproduct.com"
+            required
           />
-          {errors.url && <p className="text-red-600 mt-1">{errors.url}</p>}
         </div>
 
-        <button
-          type="submit"
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-        >
-          Submit Product
-        </button>
+        <div className="pt-4">
+          <button
+            type="submit"
+            className="w-full inline-flex justify-center items-center px-6 py-3 text-sm font-medium rounded-xl bg-primary text-white hover:bg-primary/90 transition-colors shadow-md"
+          >
+            🚀 Submit Product
+          </button>
+        </div>
       </Form>
     </div>
   );

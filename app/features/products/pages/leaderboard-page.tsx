@@ -38,11 +38,14 @@ export default function LeaderboardPage() {
             votesCount={120}
           />
         ))}
+
         <Button variant="link" asChild className="text-lg self-center">
           <Link to="/products/leaderboards/daily">
             Explore daily portfolios & ideas &rarr;
           </Link>
         </Button>
+
+        <a href="/products/leaderboards/daily">a href &rarr;</a>
       </div>
       <div className="grid grid-cols-3 gap-4">
         <div>
