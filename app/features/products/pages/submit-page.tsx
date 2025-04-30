@@ -1,6 +1,8 @@
 import { Form } from 'react-router';
 import type { Route } from './+types/categories-page';
 import { Hero } from '~/common/components/Hero';
+import InputPair from '~/common/components/ui/input-pair';
+import SelectPair from '~/common/components/select-pair';
 
 export function meta(): Route.MetaFunction {
   const meta: Route.MetaFunction = () => [
@@ -9,86 +11,44 @@ export function meta(): Route.MetaFunction {
   ];
 }
 
-export function loader({ request }: Route.LoaderArgs) {
-  return {
-    categories: [], // Add categories fetch logic
-  };
-}
-
-export default function SubmitPage({
-  loaderData,
-  actionData,
-}: Route.ComponentProps) {
+export default function SubmitPage() {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <Hero
-        title="Submit Your Product"
-        subtitle="Showcase your idea to the We-Create community"
-      />
-
-      <Form
-        method="post"
-        className="mt-10 max-w-2xl mx-auto bg-card shadow-xl rounded-2xl p-8 space-y-6 border border-border"
-      >
-        <div className="grid gap-1">
-          <label
-            htmlFor="name"
-            className="text-sm font-medium text-muted-foreground"
-          >
-            Product Name
-          </label>
-          <input
+    <div>
+      <Hero title="Submit your ideas or Portfolios" />
+      <Form className="grid grid-cols-2 gap-10 max-w-screen-2xl mx-auto">
+        <div className="space-y-5">
+          <InputPair
+            label="Name"
+            description="Fill in your details"
             id="name"
             name="name"
             type="text"
-            className="input border bg-background border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition"
-            placeholder="e.g. Productivity Pulse"
             required
+            placeholder="Name of your context"
           />
-        </div>
-
-        <div className="grid gap-1">
-          <label
-            htmlFor="category"
-            className="text-sm font-medium text-muted-foreground"
-          >
-            Category
-          </label>
-          <select
-            id="category"
+          <InputPair
+            textArea
+            label="Description"
+            description="A detailed description of your product"
+            id="description"
+            name="description"
+            required
+            type="text"
+            placeholder="A detailed description of your product"
+          />
+          <SelectPair
+            label="Category"
+            description="The category of your product"
             name="category"
-            className="input border bg-background border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition"
             required
-          >
-            <option value="">Select a category</option>
-            {/* Dynamically insert category options here */}
-          </select>
-        </div>
-
-        <div className="grid gap-1">
-          <label
-            htmlFor="url"
-            className="text-sm font-medium text-muted-foreground"
-          >
-            Product URL
-          </label>
-          <input
-            id="url"
-            name="url"
-            type="url"
-            className="input border bg-background border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition"
-            placeholder="https://yourproduct.com"
-            required
+            placeholder="Select a category"
+            options={[
+              { label: 'AI', value: 'ai' },
+              { label: 'Counselling', value: 'counselling' },
+              { label: 'Marketing', value: 'marketing' },
+              { label: 'Development', value: 'development' },
+            ]}
           />
-        </div>
-
-        <div className="pt-4">
-          <button
-            type="submit"
-            className="w-full inline-flex justify-center items-center px-6 py-3 text-sm font-medium rounded-xl bg-primary text-white hover:bg-primary/90 transition-colors shadow-md"
-          >
-            🚀 Submit Product
-          </button>
         </div>
       </Form>
     </div>
