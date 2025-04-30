@@ -4,12 +4,12 @@ import { Hero } from '~/common/components/Hero';
 import InputPair from '~/common/components/ui/input-pair';
 import SelectPair from '~/common/components/select-pair';
 
-export function meta(): Route.MetaFunction {
-  const meta: Route.MetaFunction = () => [
+export const meta: Route.MetaFunction = () => {
+  return [
     { title: 'Submit Idea | We-Create' },
     { name: 'description', content: 'Submit your idea' },
   ];
-}
+};
 
 export default function SubmitPage() {
   return (
