@@ -1,103 +1,74 @@
-import type { Route } from '../../../../+types/features/products/pages/promote-page';
+import { useState } from 'react';
+import type { Route } from './+types/features/products/pages/promote-page';
 import type { MetaFunction } from 'react-router';
 import { Form } from 'react-router';
+import { Hero } from '~/common/components/Hero';
+import SelectPair from '~/common/components/select-pair';
+import { Button } from '~/common/components/ui/button';
+import { Calendar } from '~/common/components/ui/calendar';
+import { Label } from '~/common/components/ui/label';
+import { Select } from '~/common/components/ui/select';
+import type { DateRange } from 'react-day-picker';
+import { DateTime } from 'luxon';
 
-export function meta(): MetaFunction {
-  return [
-    { title: 'Promote Your Product | ProductHunt Clone' },
-    {
-      name: 'description',
-      content: 'Promote your product for better visibility',
-    },
-  ];
-}
+export const meta: Route.MetaFunction = () => [
+  { title: 'Promote Your Product | ProductHunt Clone' },
+  {
+    name: 'description',
+    content: 'Promote your Portfolio',
+  },
+];
 
-export function loader({ request }: Route.LoaderArgs) {
-  return {
-    promotionPackages: [
-      {
-        id: 'basic',
-        name: 'Basic',
-        price: 49,
-        features: ['Featured for 1 day', 'Priority in search results'],
-      },
-      {
-        id: 'standard',
-        name: 'Standard',
-        price: 99,
-        features: [
-          'Featured for 3 days',
-          'Priority in search results',
-          'Social media promotion',
-        ],
-      },
-      {
-        id: 'premium',
-        name: 'Premium',
-        price: 199,
-        features: [
-          'Featured for 7 days',
-          'Priority in search results',
-          'Social media promotion',
-          'Newsletter feature',
-        ],
-      },
-    ],
-  };
-}
-
-export function action({ request }: Route.ActionArgs) {
-  // Handle promotion form submission
-  return {
-    success: false,
-    errors: {
-      // Add form validation logic
-    },
-  };
-}
-
-export default function PromotePage({
-  loaderData,
-  actionData,
-}: Route.ComponentProps) {
-  const { promotionPackages } = loaderData;
-  const errors = actionData?.errors || {};
-
+export default function PromotePage() {
+  const [promotionPeriod, setPromotionPeriod] = useState<
+    DateRange | undefined
+  >();
+  const totalDays =
+    promotionPeriod?.from && promotionPeriod.to
+      ? DateTime.fromJSDate(promotionPeriod.to).diff(
+          DateTime.fromJSDate(promotionPeriod.from),
+          'days',
+        ).days
+      : 0;
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Promote Your Product</h1>
-
-      <div className="mb-10">
-        <p className="text-lg">
-          Get more visibility for your product by purchasing a promotion
-          package.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        {promotionPackages.map((pkg) => (
-          <div key={pkg.id} className="border rounded-lg p-6 flex flex-col">
-            <h2 className="text-xl font-bold mb-2">{pkg.name}</h2>
-            <p className="text-2xl font-bold mb-4">${pkg.price}</p>
-            <ul className="mb-6 flex-grow">
-              {pkg.features.map((feature, index) => (
-                <li key={index} className="flex items-center mb-2">
-                  <span className="mr-2">✓</span> {feature}
-                </li>
-              ))}
-            </ul>
-            <Form method="post">
-              <input type="hidden" name="packageId" value={pkg.id} />
-              <button
-                type="submit"
-                className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                Select
-              </button>
-            </Form>
-          </div>
-        ))}
-      </div>
+    <div>
+      <Hero title="Promote your Portfolio" subtitle="Promote your Portfolio" />
+      <Form className="max-w-sm-mx-auto flex flex-col gap-10 items-center">
+        <SelectPair
+          label="Select a portfolio"
+          name="portfolio"
+          description="Select a portfolio you would like to promote"
+          placeholder="Select your portfolio"
+          options={[
+            {
+              label: 'Portfolio 1',
+              value: 'portfolio-1',
+            },
+            {
+              label: 'Portfolio 2',
+              value: 'portfolio-2',
+            },
+          ]}
+        />
+        <div className="flex flex-col gap-2 items-center w-full">
+          <Label className="flex flex-col gap-1">
+            Select a range of dates for your portfolio promotion
+            <small className="text-muted-foreground text-center">
+              Minium duration is for 3 days
+            </small>
+          </Label>
+          <Calendar
+            mode="range"
+            selected={promotionPeriod}
+            onSelect={setPromotionPeriod}
+            min={3}
+            disabled={{ before: new Date() }}
+          />
+          <Button disabled={totalDays === 0}>
+            Go to Checkout! (${totalDays * 20})
+          </Button>
+        </div>
+      </Form>
     </div>
   );
 }

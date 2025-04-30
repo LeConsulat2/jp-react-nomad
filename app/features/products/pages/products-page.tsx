@@ -1,4 +1,4 @@
-import type { Route } from '../../../../+types/features/products/pages/products-page';
+import type { Route } from './+types/features/products/pages/products-page';
 import type { MetaFunction } from 'react-router';
 
 export function meta(): MetaFunction {
