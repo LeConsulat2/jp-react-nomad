@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router';
-import type { Route } from '../../../../+types/features/products/pages/product-overview-page';
+import type { Route } from '~/features/products/pages/+types/product-overview-page';
 
 export default function ProductOverviewPage({
   params: { productId },
