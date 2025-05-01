@@ -93,7 +93,7 @@ export default function JobsPage() {
           {/* Filter: Salary-Range */}
           <div className="flex flex-col gap-2.5">
             <h4 className="text-sm font-medium">Salary-Range</h4>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 sticky top-20">
               {SALARY_RANGE.map((salary) => (
                 <Button
                   key={salary}
