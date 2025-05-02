@@ -1,21 +1,17 @@
 import type { Route } from './+types/features/products/pages/products-page';
 import type { MetaFunction } from 'react-router';
 
-export function meta(): MetaFunction {
+export const meta: Route.MetaFunction = () => {
   return [
-    { title: 'Products | ProductHunt Clone' },
+    { title: 'Products | We-Create' },
     { name: 'description', content: 'Browse all products' },
   ];
-}
+};
 
 export function loader({ request }: Route.LoaderArgs) {
   return {
     products: [], // Add products fetch logic
   };
-}
-
-export function action({ request }: Route.ActionArgs) {
-  return {};
 }
 
 export default function ProductsPage({ loaderData }: Route.ComponentProps) {

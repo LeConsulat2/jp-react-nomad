@@ -22,13 +22,13 @@ const paramsSchema = z.object({
 
 export function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
-  const { success, data: parseData } = paramsSchema.safeParse(
+  const { success, data: parsedData } = paramsSchema.safeParse(
     Object.fromEntries(url.searchParams),
   );
   if (!success) {
     throw new Error('Invalid params');
   } else {
-    return parseData;
+    return parsedData;
   }
 }
 
