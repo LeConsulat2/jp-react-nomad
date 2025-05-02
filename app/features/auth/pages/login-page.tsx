@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { Button } from '~/common/components/ui/button';
 import InputPair from '~/common/components/ui/input-pair';
 import type { Route } from './+types/login-page';
+import AuthButtons from '../components/auth-buttons';
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -43,6 +44,7 @@ export default function LoginPage() {
             Log in
           </Button>
         </Form>
+        <AuthButtons />
       </div>
     </div>
   );

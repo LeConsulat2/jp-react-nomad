@@ -29,7 +29,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
   return (
     // 전체 레이아웃을 감싸는 최상위 div입니다.
     // 좌우 여백을 'px-20', 섹션 간 간격을 'space-y-40'으로 설정합니다.
-    <div className="px-20 space-y-40">
+    <div className=" px-20 space-y-40">
       {/* ==================================================
           🛍️ Today's Products 섹션
           ================================================== */}

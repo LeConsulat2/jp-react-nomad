@@ -5,6 +5,8 @@
 @layer base {
   html,
   body {
+    /* @apply min-h-screen w-full bg-gradient-to-r from-violet-300 via-violet-400 to-violet-500; 
+    여기를 바꾸면 Body 바뀜 물론 navbar는 안바뀜. 따로 해야함*/
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif,
       'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
       'Noto Color Emoji';

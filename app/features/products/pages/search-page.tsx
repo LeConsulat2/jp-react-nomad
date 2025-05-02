@@ -10,7 +10,7 @@ import ProductPagination from '~/common/components/product-pagination';
 
 export const meta: Route.MetaFunction = () => {
   return [
-    { title: 'Search Products | ProductHunt Clone' },
+    { title: 'Search Products | We-Create' },
     { name: 'description', content: 'Search for products' },
   ];
 };
@@ -26,15 +26,9 @@ export function loader({ request }: Route.LoaderArgs) {
     Object.fromEntries(url.searchParams),
   );
   if (!success) {
-    throw data(
-      {
-        error_code: 'invalid_params',
-        message: 'Invalid params',
-      },
-      {
-        status: 400,
-      },
-    );
+    throw new Error('Invalid params');
+  } else {
+    return parseData;
   }
 }
 
