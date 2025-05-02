@@ -1,5 +1,5 @@
 import { Form, Link, useSearchParams } from 'react-router';
-import type { Route } from './+types/jobs-page';
+import type { Route } from '../../../common/+types/route-types';
 import { IdeaCard } from '~/features/products/components/idea-card';
 import { Hero } from '~/common/components/Hero';
 import { JobCard } from '~/features/products/components/job-card';
@@ -7,12 +7,12 @@ import { Button } from '~/common/components/ui/button';
 import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from '../constants';
 import { cn } from '~/lib/utils';
 
-export const meta: Route.MetaFunction = () => {
+export function meta(args: Route.MetaArgs): Route.MetaDescriptors {
   return [
-    { title: 'Jobs | We-Create' },
-    { name: 'description', content: 'Find and apply for jobs' },
+    { title: 'Jobs | Product Hunt Clone' },
+    { name: 'description', content: 'Find the best jobs in tech' },
   ];
-};
+}
 
 export default function JobsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
