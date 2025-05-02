@@ -1,40 +1,45 @@
-import type { Route } from '../../../common/+types/route-types';
+import { Button } from '~/common/components/ui/button';
+import type { Route } from './+types/login-page';
+import { Form, Link } from 'react-router';
+import InputPair from '~/common/components/ui/input-pair';
+import AuthButtons from '../components/auth-buttons';
 
-export function meta(args: Route.MetaArgs): Route.MetaDescriptors {
-  return [
-    { title: 'Join | Product Hunt Clone' },
-    { name: 'description', content: 'Create a new account' },
-  ];
-}
+export const meta: Route.MetaFunction = () => {
+  return [{ title: 'Login | We-Create' }];
+};
 
 export default function JoinPage() {
   return (
-    <div className="flex flex-col justify-center items-center h-full text-white px-8 space-y-8">
-      <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight">Create an account</h1>
-        <p className="text-sm text-rose-100">
-          Join our community and start your journey today.
-        </p>
-      </div>
-
-      <div className="w-full max-w-sm space-y-4">
-        {/* Form placeholder */}
-        <button
-          type="submit"
-          className="w-full py-3 px-4 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-sm font-semibold rounded-lg shadow-lg transition"
-        >
-          Sign up
-        </button>
-
-        <p className="text-center text-sm text-rose-100">
-          Already have an account?{' '}
-          <a
-            href="/auth/login"
-            className="font-medium underline hover:text-white"
-          >
-            Log in
-          </a>
-        </p>
+    <div className="flex flex-col relative items-center justify-center h-full">
+      <Button variant={'ghost'} asChild className="absolute right-8 top-8 ">
+        <Link to="/auth/login">Log in</Link>
+      </Button>
+      <div className="flex items-center flex-col justify-center w-full max-w-md gap-10">
+        <h1 className="text-2xl font-semibold">Create an account</h1>
+        <Form className="w-full space-y-4">
+          <InputPair
+            label="Email"
+            description="Enter your email address"
+            name="email"
+            id="email"
+            required
+            type="email"
+            placeholder="i.e wemake@example.com"
+          />
+          <InputPair
+            id="password"
+            label="Password"
+            description="Enter your password"
+            name="password"
+            required
+            type="password"
+            placeholder="i.e wemake@example.com"
+          />
+          <Button className="w-full" type="submit">
+            Create an account
+          </Button>
+        </Form>
+        <AuthButtons />
       </div>
     </div>
   );

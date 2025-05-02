@@ -1,31 +1,48 @@
-import type { Route } from '../../../common/+types/route-types';
+import { Form } from 'react-router';
+import { Link } from 'react-router';
+
+import { Button } from '~/common/components/ui/button';
+import InputPair from '~/common/components/ui/input-pair';
+import type { Route } from './+types/login-page';
 
 export const meta: Route.MetaFunction = () => {
   return [
-    { title: 'Login | Product Hunt Clone' },
+    { title: 'Login | We-Create' },
     { name: 'description', content: 'Log in to your account' },
   ];
 };
 
 export default function LoginPage() {
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold">Login</h1>
-        <p className="text-sm text-gray-500">Welcome back!</p>
-      </div>
-
-      <div className="space-y-4">
-        {/* Form would go here */}
-        <p className="text-center text-sm">
-          Don't have an account?{' '}
-          <a
-            href="/auth/join"
-            className="font-medium text-blue-600 hover:underline"
-          >
-            Sign up
-          </a>
-        </p>
+    <div className="flex flex-col relative items-center justify-center h-full">
+      <Button variant={'ghost'} asChild className="absolute right-8 top-8 ">
+        <Link to="/auth/join">Join</Link>
+      </Button>
+      <div className="flex items-center flex-col justify-center w-full max-w-md gap-10">
+        <h1 className="text-2xl font-semibold">Log in to your account</h1>
+        <Form className="w-full space-y-4">
+          <InputPair
+            label="Email"
+            description="Enter your email address"
+            name="email"
+            id="email"
+            required
+            type="email"
+            placeholder="i.e wemake@example.com"
+          />
+          <InputPair
+            id="password"
+            label="Password"
+            description="Enter your password"
+            name="password"
+            required
+            type="password"
+            placeholder="i.e wemake@example.com"
+          />
+          <Button className="w-full" type="submit">
+            Log in
+          </Button>
+        </Form>
       </div>
     </div>
   );

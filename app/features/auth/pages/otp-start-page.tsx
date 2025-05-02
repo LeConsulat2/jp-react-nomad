@@ -1,32 +1,38 @@
+import { Form } from 'react-router';
+import { Button } from '~/common/components/ui/button';
 import type { Route } from '../../../common/+types/route-types';
+import { Link } from 'react-router';
+import InputPair from '~/common/components/ui/input-pair';
 
 export const meta: Route.MetaFunction = () => {
-  return [
-    { title: 'Enter Email | OTP Authentication' },
-    { name: 'description', content: 'Start one-time password authentication' },
-  ];
+  return [{ title: 'Start OTP | OTP Authentication' }];
 };
 
 export default function OtpStartPage() {
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold">One-Time Password Login</h1>
-        <p className="text-sm text-gray-500">
-          Enter your email to receive a login code
-        </p>
-      </div>
+    <div className="flex flex-col relative items-center justify-center h-full">
+      <div className="flex items-center flex-col justify-center w-full max-w-md gap-10">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold">
+            Log in with One-Time Password
+          </h1>
+          <p>We will send you a 4-digit code to log in to your account.</p>
+        </div>
+        <Form className="w-full space-y-4">
+          <InputPair
+            label="Email"
+            description="Enter your email address"
+            name="email"
+            id="email"
+            required
+            type="email"
+            placeholder="i.e wecreate@example.com"
+          />
 
-      <div className="space-y-4">
-        {/* Form would go here */}
-        <p className="text-center text-sm">
-          <a
-            href="/auth/login"
-            className="font-medium text-blue-600 hover:underline"
-          >
-            Back to login
-          </a>
-        </p>
+          <Button className="w-full" type="submit">
+            Send One-Time Password
+          </Button>
+        </Form>
       </div>
     </div>
   );
