@@ -1,3 +1,5 @@
-export default function ProfilePage() {
-  return <h1>Profile</h1>;
+import { redirect } from 'react-router';
+
+export function loader() {
+  return redirect('/users/lynn');
 }
