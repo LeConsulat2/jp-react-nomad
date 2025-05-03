@@ -1,95 +1,121 @@
-import { Link } from 'react-router';
+import type { Route } from './+types/team-page';
 import { Button } from '~/common/components/ui/button';
-import { Badge } from '~/common/components/ui/badge';
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from '~/common/components/ui/avatar';
-import type { Route } from './+types/team-page';
+import { Badge } from '~/common/components/ui/badge';
+import { Form } from 'react-router';
 
-export const meta: Route.MetaFunction = ({ params }) => {
-  return [{ title: `${params.teamId} Team | wemake` }];
-};
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '~/common/components/ui/card';
+import { Hero } from '~/common/components/Hero';
+import InputPair from '~/common/components/ui/input-pair';
+
+export const meta: Route.MetaFunction = () => [
+  { title: 'Team Details | wemake' },
+];
 
 export default function TeamPage() {
   return (
-    <div className="space-y-10">
-      <div className="flex flex-col md:flex-row gap-8">
-        <div className="flex-shrink-0">
-          <div className="h-32 w-32 rounded-lg bg-gray-200"></div>
-        </div>
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-bold">Team Alpha</h1>
-            <p className="text-muted-foreground">
-              Building innovative tools for developers
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Badge variant="outline">5 members</Badge>
-            <Badge variant="outline">3 products</Badge>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button>Follow Team</Button>
-            <Button variant="outline">Contact</Button>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
-        <div className="md:col-span-4 space-y-8">
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">About</h2>
-            <p className="text-muted-foreground">
-              Team Alpha is a group of passionate developers focused on creating
-              tools that make the development process easier and more efficient.
-              We specialize in frontend frameworks and developer tooling.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Products</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="border rounded-lg p-4 space-y-2">
-                <h3 className="font-semibold">DevTools Pro</h3>
-                <p className="text-sm text-muted-foreground">
-                  A comprehensive suite of developer tools
+    <div className="space-y-20">
+      <Hero title="Join lynn's team" />
+      <div className="grid grid-cols-6 gap-40 items-start">
+        <div className="col-span-4 grid grid-cols-4 gap-5">
+          {[
+            {
+              title: 'Product name',
+              value: 'Doggie Social',
+            },
+            {
+              title: 'Stage',
+              value: 'MVP',
+            },
+            {
+              title: 'Team size',
+              value: 3,
+            },
+            {
+              title: 'Available equity',
+              value: 50,
+            },
+          ].map((item) => (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  {item.title}
+                </CardTitle>
+                <CardContent className="p-0 font-bold text-2xl">
+                  <p>{item.value}</p>
+                </CardContent>
+              </CardHeader>
+            </Card>
+          ))}
+          <Card className="col-span-2">
+            <CardHeader>
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Looking for
+              </CardTitle>
+              <CardContent className="p-0 font-bold text-2xl">
+                <ul className="text-lg list-disc list-inside">
+                  {[
+                    'React Developer',
+                    'Backend Developer',
+                    'Product Manager',
+                    'UI/UX Designer',
+                  ].map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </CardHeader>
+          </Card>
+          <Card className="col-span-2">
+            <CardHeader>
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Idea description
+              </CardTitle>
+              <CardContent className="p-0 font-medium text-xl">
+                <p>
+                  Doggie Social is a social media platform for dogs. It allows
+                  dogs to connect with each other and share their experiences.
                 </p>
-              </div>
+              </CardContent>
+            </CardHeader>
+          </Card>
+        </div>
+        <aside className="col-span-2 space-y-5 border rounded-lg p-6 shadow-sm">
+          <div className="flex gap-5">
+            <Avatar className="size-14">
+              <AvatarFallback>N</AvatarFallback>
+              <AvatarImage src="https://github.com/inthetiger.png" />
+            </Avatar>
+            <div className="flex flex-col">
+              <h4 className="text-lg font-medium">Lynn</h4>
+              <Badge variant="secondary">Entrepreneur</Badge>
             </div>
           </div>
-        </div>
-
-        <div className="md:col-span-2 space-y-6">
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Team Members</h2>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarFallback>JD</AvatarFallback>
-                  <AvatarImage src="" />
-                </Avatar>
-                <div>
-                  <h3 className="font-medium">John Doe</h3>
-                  <p className="text-sm text-muted-foreground">Founder</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarFallback>JS</AvatarFallback>
-                  <AvatarImage src="" />
-                </Avatar>
-                <div>
-                  <h3 className="font-medium">Jane Smith</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Lead Developer
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          <Form className="space-y-5">
+            <InputPair
+              label="Introduce yourself"
+              description="Tell us about yourself"
+              name="introduction"
+              type="text"
+              id="introduction"
+              required
+              textArea
+              placeholder="i.e. I'm a React Developer with 3 years of experience"
+            />
+            <Button type="submit" className="w-full">
+              Get in touch
+            </Button>
+          </Form>
+        </aside>
       </div>
     </div>
   );
