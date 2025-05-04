@@ -29,9 +29,9 @@ export default function JobsPage() {
       <Hero title="Jobs" subtitle="Find and apply for jobs" />
       {/* 여기가 중앙 타이틀 레이아웃 보이는곳 끝 */}
 
-      <div className="grid grid-cols-6 gap-4 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-6 gap-20 items-start">
         {/* Left: Job cards */}
-        <div className="grid grid-cols-3 col-span-4 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl: col-span-4 gap-3">
           {Array.from({ length: 10 }).map((_, index) => (
             <JobCard
               key={`ideaId-${index}`}
@@ -49,7 +49,7 @@ export default function JobsPage() {
         </div>
 
         {/* Right: Filter sidebar */}
-        <div className="col-span-2 flex flex-col gap-10">
+        <div className="xl: col-span-2 flex flex-col gap-10">
           {/* Filter: Type */}
           <div className="flex flex-col gap-2.5">
             <h4 className="text-sm font-medium">Type</h4>
