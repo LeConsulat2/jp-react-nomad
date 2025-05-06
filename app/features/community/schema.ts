@@ -1,6 +1,7 @@
 import {
   bigint,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uuid,
@@ -29,11 +30,18 @@ export const posts = pgTable('posts', {
   }),
 });
 
-export const postUpvotes = pgTable('post_upvotes', {
-  post_id: bigint({ mode: 'number' }).references(() => posts.post_id, {
-    onDelete: 'cascade',
-  }),
-});
+export const postUpvotes = pgTable(
+  'post_upvotes',
+  {
+    post_id: bigint({ mode: 'number' }).references(() => posts.post_id, {
+      onDelete: 'cascade',
+    }),
+    profile_id: uuid().references(() => profiles.profile_id, {
+      onDelete: 'cascade',
+    }),
+  },
+  (table) => [primaryKey({ columns: [table.post_id, table.profile_id] })],
+);
 
 export const postReplies = pgTable('post_replies', {
   post_reply_id: bigint({ mode: 'number' })
