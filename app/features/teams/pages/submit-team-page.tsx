@@ -4,6 +4,7 @@ import { Button } from '~/common/components/ui/button';
 import SelectPair from '~/common/components/select-pair';
 import { Hero } from '~/common/components/Hero';
 import InputPair from '~/common/components/ui/input-pair';
+import { PRODUCT_STAGE } from './constants';
 
 export const meta: Route.MetaFunction = () => [
   { title: 'Create Team | wemake' },
@@ -31,12 +32,7 @@ export default function SubmitTeamPage() {
             name="stage"
             required
             placeholder="Select the stage of your product"
-            options={[
-              { label: 'Idea', value: 'idea' },
-              { label: 'Prototype', value: 'prototype' },
-              { label: 'MVP', value: 'mvp' },
-              { label: 'Product', value: 'product' },
-            ]}
+            options={PRODUCT_STAGE}
           />
           <InputPair
             label="What is the size of your team?"
