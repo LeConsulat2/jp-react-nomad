@@ -48,5 +48,10 @@ export const getTopics = async () => {
 };
 
 export const getPosts = async () => {
-  await client.from('posts').select(`id, title, created_at`);
+  const { data, error } = await client
+    .from('community_post_list_view')
+    .select(`*`);
+  console.log(data, error);
+  if (error) throw new Error(error.message);
+  return data;
 };
