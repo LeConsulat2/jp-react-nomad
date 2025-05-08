@@ -72,9 +72,9 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
             id={`productId-${index}`}
             name="Portfolio Name"
             description="Portfolio Description"
-            commentsCount={5}
-            viewsCount={1000}
-            votesCount={100}
+            reviewsCount="5"
+            viewsCount="1000"
+            votesCount="100"
           />
         ))}
       </div>

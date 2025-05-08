@@ -78,6 +78,13 @@
       "when": 1746656854545,
       "tag": "0010_quick_morlocks",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1746682908775,
+      "tag": "0011_thin_thanos",
+      "breakpoints": true
     }
   ]
 }

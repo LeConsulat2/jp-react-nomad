@@ -14,16 +14,16 @@ interface ProductCardProps {
   id: string; // 상품 상세 페이지로 이동할 때 사용할 고유 ID
   name: string; // 상품 이름
   description: string; // 상품 설명
-  commentsCount: number; // 댓글 개수
-  viewsCount: number; // 조회수
-  votesCount: number; // 추천(투표) 수
+  reviewsCount: string; // 댓글 개수
+  viewsCount: string; // 조회수
+  votesCount: string; // 추천(투표) 수
 }
 
 export function ProductCard({
   id,
   name,
   description,
-  commentsCount,
+  reviewsCount,
   viewsCount,
   votesCount,
 }: ProductCardProps) {
@@ -49,7 +49,7 @@ export function ProductCard({
             {/* 댓글 아이콘 + 개수 */}
             <div className="flex items-center gap-px text-xs text-muted-foreground">
               <MessageCircleIcon className="w-4 h-4" />
-              <span>{commentsCount}</span>
+              <span>{reviewsCount}</span>
             </div>
 
             {/* 조회수 아이콘 + 개수 */}

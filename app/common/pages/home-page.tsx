@@ -8,17 +8,28 @@ import { JobCard } from '~/features/products/components/job-card';
 import { TeamCard } from '~/features/products/components/team-card';
 import type { ComponentProps } from 'react'; // Using React.ComponentProps as placeholder
 import type { Route } from './+types/home-page';
+import { getProductsByDateRange } from '~/features/products/queries';
+import { DateTime } from 'luxon';
 
 // ==================================================
 // 🌐 메타데이터 설정
 // ==================================================
-export function meta(): ReturnType<MetaFunction> {
-  // Use standard MetaFunction return type
+
+export const meta: Route.MetaFunction = () => {
   return [
     { title: 'Home | We-Create' },
     { name: 'description', content: 'Welcome to We-Create' },
   ];
-}
+};
+
+export const loader = async () => {
+  const products = await getProductsByDateRange({
+    startDate: DateTime.now().startOf('day'),
+    endDate: DateTime.now().endOf('day'),
+    limit: 7,
+  });
+  return { products };
+};
 
 // ==================================================
 // 🏠 HomePage 컴포넌트
@@ -49,15 +60,15 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
         </div>
 
         {/* 오른쪽 두 번째, 세 번째 컬럼: ProductCard 리스트 */}
-        {Array.from({ length: 11 }).map((_, index) => (
+        {loaderData.products.map((product, index) => (
           <ProductCard
-            key={index}
-            id={`productId-${index}`}
-            name="Product Name"
-            description="Product Description"
-            commentsCount={12}
-            viewsCount={12}
-            votesCount={120}
+            key={product.product_id}
+            id={product.product_id.toString()}
+            name={product.name}
+            description={product.description}
+            reviewsCount={product.reviews}
+            viewsCount={product.views}
+            votesCount={product.upvotes}
           />
         ))}
       </div>
@@ -195,12 +206,6 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
       </div>
     </div>
   );
-}
-
-export function loader({ request }: LoaderFunctionArgs) {
-  // Implement your loader logic here
-  console.log('Home Page Loader Request:', request);
-  return {};
 }
 
 /* 
