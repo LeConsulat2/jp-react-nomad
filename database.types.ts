@@ -432,6 +432,7 @@ export type Database = {
           title: string
           topic_id: number | null
           updated_at: string
+          upvotes: number | null
         }
         Insert: {
           content: string
@@ -441,6 +442,7 @@ export type Database = {
           title: string
           topic_id?: number | null
           updated_at?: string
+          upvotes?: number | null
         }
         Update: {
           content?: string
@@ -450,6 +452,7 @@ export type Database = {
           title?: string
           topic_id?: number | null
           updated_at?: string
+          upvotes?: number | null
         }
         Relationships: [
           {
@@ -706,13 +709,15 @@ export type Database = {
     Views: {
       community_post_list_view: {
         Row: {
+          author: string | null
           author_avatar: string | null
-          author_name: string | null
           author_username: string | null
           created_at: string | null
+          is_upvoted: boolean | null
           post_id: number | null
           title: string | null
-          topic_name: string | null
+          topic: string | null
+          topic_slug: string | null
           upvotes: number | null
         }
         Relationships: []

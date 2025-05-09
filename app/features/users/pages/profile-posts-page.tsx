@@ -1,4 +1,4 @@
-import { PostCard } from '~/features/products/components/post-card';
+import { PostCard } from '~/features/community/components/post-card';
 import type { Route } from './+types/profile-posts-page';
 
 export const meta: Route.MetaFunction = () => {

@@ -1,4 +1,4 @@
-import { IdeaCard } from '~/features/products/components/idea-card';
+import { IdeaCard } from '~/features/ideas/components/idea-card';
 import type { Route } from './+types/dashboard-ideas-page';
 
 export const meta: Route.MetaFunction = () => {

@@ -1,6 +1,6 @@
 import { Hero } from '~/common/components/Hero';
 import type { Route } from './+types/ideas-page';
-import { IdeaCard } from '~/features/products/components/idea-card';
+import { IdeaCard } from '~/features/ideas/components/idea-card';
 
 export const meta: Route.MetaFunction = () => {
   return [

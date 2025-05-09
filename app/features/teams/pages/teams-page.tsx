@@ -1,5 +1,5 @@
 import type { Route } from './+types/teams-page';
-import { TeamCard } from '~/features/products/components/team-card';
+import { TeamCard } from '~/features/teams/components/team-card';
 import { Hero } from '~/common/components/Hero';
 
 export const meta: Route.MetaFunction = () => [{ title: 'Teams | wemake' }];
