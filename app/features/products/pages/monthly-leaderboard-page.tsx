@@ -2,10 +2,12 @@ import { DateTime } from 'luxon';
 import type { Route } from './+types/monthly-leaderboard-page';
 import { data, isRouteErrorResponse, Link } from 'react-router';
 import { z } from 'zod';
-import { Hero } from '~/common/components/hero';
+
 import { ProductCard } from '../components/product-card';
 import { Button } from '~/common/components/ui/button';
 import ProductPagination from '~/common/components/product-pagination';
+import { Hero } from '~/common/components/Hero';
+import { getProductPagesByDateRange, getProductsByDateRange } from '../queries';
 
 const paramsSchema = z.object({
   year: z.coerce.number(),
@@ -17,19 +19,19 @@ export const meta: Route.MetaFunction = ({ params }) => {
     year: Number(params.year),
     month: Number(params.month),
   })
-    .setZone('Pacific/Auckland')
-    .setLocale('en-nz');
+    .setZone('Asia/Seoul')
+    .setLocale('ko');
   return [
     {
       title: `Best of ${date.toLocaleString({
         month: 'long',
         year: '2-digit',
-      })} | We-Create`,
+      })} | wemake`,
     },
   ];
 };
 
-export const loader = ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { success, data: parsedData } = paramsSchema.safeParse(params);
   if (!success) {
     throw data(
@@ -43,9 +45,7 @@ export const loader = ({ params }: Route.LoaderArgs) => {
   const date = DateTime.fromObject({
     year: parsedData.year,
     month: parsedData.month,
-  })
-    .setZone('Pacific/Auckland')
-    .setLocale('en-nz');
+  }).setZone('Asia/Seoul');
   if (!date.isValid) {
     throw data(
       {
@@ -57,7 +57,7 @@ export const loader = ({ params }: Route.LoaderArgs) => {
       },
     );
   }
-  const today = DateTime.now().setZone('Pacific/Auckland').startOf('month');
+  const today = DateTime.now().setZone('Asia/Seoul').startOf('month');
   if (date > today) {
     throw data(
       {
@@ -67,7 +67,20 @@ export const loader = ({ params }: Route.LoaderArgs) => {
       { status: 400 },
     );
   }
+  const url = new URL(request.url);
+  const products = await getProductsByDateRange({
+    startDate: date.startOf('month'),
+    endDate: date.endOf('month'),
+    limit: 15,
+    page: Number(url.searchParams.get('page') || 1),
+  });
+  const totalPages = await getProductPagesByDateRange({
+    startDate: date.startOf('month'),
+    endDate: date.endOf('month'),
+  });
   return {
+    products,
+    totalPages,
     ...parsedData,
   };
 };
@@ -117,19 +130,19 @@ export default function MonthlyLeaderboardPage({
         ) : null}
       </div>
       <div className="space-y-5 w-full max-w-screen-md mx-auto">
-        {Array.from({ length: 11 }).map((_, index) => (
+        {loaderData.products.map((product) => (
           <ProductCard
-            key={`productId-${index}`}
-            id={`productId-${index}`}
-            name="Product Name"
-            description="Product Description"
-            commentsCount={12}
-            viewsCount={12}
-            votesCount={120}
+            key={product.product_id}
+            id={product.product_id.toString()}
+            name={product.name}
+            description={product.description}
+            reviewsCount={product.reviews}
+            viewsCount={product.views}
+            votesCount={product.upvotes}
           />
         ))}
       </div>
-      <ProductPagination totalPages={10} />
+      <ProductPagination totalPages={loaderData.totalPages} />
     </div>
   );
 }
