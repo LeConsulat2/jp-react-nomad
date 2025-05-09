@@ -1,11 +1,11 @@
 import { DotIcon, HeartIcon } from 'lucide-react';
 import { EyeIcon } from 'lucide-react';
-import { Hero } from '~/common/components/Hero';
 
 import { Button } from '~/common/components/ui/button';
 import type { Route } from './+types/idea-page';
-import { getGptIdeas } from '../queries';
+import { getGptIdea } from '../queries';
 import { DateTime } from 'luxon';
+import { Hero } from '~/common/components/Hero';
 
 export const meta = ({
   data: {
@@ -13,13 +13,13 @@ export const meta = ({
   },
 }: Route.MetaArgs) => {
   return [
-    { title: `Idea #${gpt_idea_id}: ${idea} | We-Create` },
-    { name: 'description', content: 'Find your next ideas!' },
+    { title: `Idea #${gpt_idea_id}: ${idea} | wemake` },
+    { name: 'description', content: 'Find ideas for your next project' },
   ];
 };
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
-  const idea = await getGptIdeas(params.ideaId);
+  const idea = await getGptIdea(params.ideaId);
   return { idea };
 };
 
