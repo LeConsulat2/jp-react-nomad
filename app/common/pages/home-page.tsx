@@ -9,6 +9,7 @@ import { getProductsByDateRange } from '~/features/products/queries';
 import { DateTime } from 'luxon';
 import type { Route } from './+types/home-page';
 import { getPosts } from '~/features/community/queries';
+import { getGptIdeas } from '~/features/ideas/queries';
 
 // ==================================================
 // 🌐 메타데이터 설정
@@ -21,27 +22,17 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async () => {
-  const [products, posts] = await Promise.all([
-    getProductsByDateRange({
-      startDate: DateTime.now().startOf('day'),
-      endDate: DateTime.now().endOf('day'),
-      limit: 7,
-    }),
-    getPosts({
-      limit: 7,
-      sorting: 'newest',
-    }),
-  ]);
-
-  const teams = Array.from({ length: 3 }).map((_, index) => ({
-    id: index + 1,
-    leaderUsername: 'Jin',
-    leaderAvatarUrl: '',
-    positions: ['Counsellor', 'Occupational Therapist', 'Physiotherapist'],
-    projectDescription: 'Creating and contributing platform',
-  }));
-
-  return { products, posts, teams };
+  const products = await getProductsByDateRange({
+    startDate: DateTime.now().startOf('day'),
+    endDate: DateTime.now().endOf('day'),
+    limit: 7,
+  });
+  const posts = await getPosts({
+    limit: 7,
+    sorting: 'newest',
+  });
+  const ideas = await getGptIdeas({ limit: 7 });
+  return { products, posts, ideas };
 };
 
 // ==================================================
@@ -120,15 +111,15 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <Link to="/ideas">Explore All Ideas! &rarr;</Link>
           </Button>
         </div>
-        {Array.from({ length: 5 }).map((_, index) => (
+        {loaderData.ideas.map((idea) => (
           <IdeaCard
-            key={`ideaId-${index}`}
-            id={`ideaId-${index}`}
-            title="A startup that creates an AI-powered generated personal trainer, delivering customized fitness recommendations and tracking of progress using a mobile app to track workouts and progress as well as a website to manage the business."
-            viewsCount={123}
-            postedAt="10 hours ago"
-            likesCount={10}
-            claimed={index % 2 === 0}
+            key={idea.gpt_idea_id}
+            id={idea.gpt_idea_id}
+            title={idea.idea}
+            viewsCount={idea.views}
+            postedAt={idea.created_at}
+            likesCount={idea.likes}
+            claimed={idea.is_claimed}
           />
         ))}
       </div>
@@ -179,14 +170,18 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             <Link to="/teams">Discover all initiatives & teams</Link>
           </Button>
         </div>
-        {loaderData.teams.map((team) => (
+        {Array.from({ length: 7 }).map((_, index) => (
           <TeamCard
-            key={team.id}
-            id={team.id}
-            leaderUsername={team.leaderUsername}
-            leaderAvatarUrl={team.leaderAvatarUrl}
-            positions={team.positions}
-            projectDescription={team.projectDescription}
+            key={`teamId-${index}`}
+            id={`teamId-${index}`}
+            leaderUsername="lynn"
+            leaderAvatarUrl="https://github.com/inthetiger.png"
+            positions={[
+              'React Developer',
+              'Backend Developer',
+              'Product Manager',
+            ]}
+            projectDescription="a new social media platform"
           />
         ))}
       </div>

@@ -22,7 +22,7 @@ interface PostCardProps {
   author: string;
   authorAvatarUrl: string | null;
   category: string;
-  postedAt: Date;
+  postedAt: string;
   expanded?: boolean;
   votesCount?: number;
 }

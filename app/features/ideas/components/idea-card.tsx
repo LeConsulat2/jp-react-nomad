@@ -1,4 +1,5 @@
 import { DotIcon, EyeIcon, HeartIcon, LockIcon } from 'lucide-react';
+import { DateTime } from 'luxon';
 import { Link } from 'react-router';
 import { Button } from '~/common/components/ui/button';
 import {
@@ -11,7 +12,7 @@ import {
 import { cn } from '~/lib/utils';
 
 interface IdeaCardProps {
-  id: string; // 아이디어의 고유 ID
+  id: number; // 아이디어의 고유 ID
   title: string; // 아이디어 제목
   viewsCount: number; // 조회 수
   postedAt: string; // 게시된 시간
@@ -56,6 +57,8 @@ export function IdeaCard({
         <div className="flex items-center gap-1">
           <EyeIcon className="w-4 h-4" />
           <span>{viewsCount}</span>
+          <DotIcon className="w-4 h-4" />
+          <span>{DateTime.fromISO(postedAt).toRelative()}</span>
         </div>
         {/* 조회 수와 다른 정보 구분하는 점 아이콘 */}
         <DotIcon />
