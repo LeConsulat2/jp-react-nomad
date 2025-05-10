@@ -11,7 +11,7 @@ import { Badge } from '~/common/components/ui/badge';
 
 // JobCard 컴포넌트가 받을 props 타입 정의
 interface JobCardProps {
-  id: string; // 구인 공고 id
+  id: number; // 구인 공고 id
   company: string; // 회사 이름
   companyLogoUrl: string; // 회사 로고 URL
   companyHq: string; // 회사 본사 위치
@@ -58,8 +58,12 @@ export function JobCard({
 
         <CardContent>
           {/* 고용 형태, 근무 위치를 Badge로 표시 */}
-          <Badge variant="outline">{type}</Badge>
-          <Badge variant="outline">{positionLocation}</Badge>
+          <Badge variant="outline" className="capitalize">
+            {type}
+          </Badge>
+          <Badge variant="outline" className="capitalize">
+            {positionLocation}
+          </Badge>
         </CardContent>
 
         <CardFooter className="flex justify-between">

@@ -1,27 +1,59 @@
-import { Form, Link, useSearchParams } from 'react-router';
+import { data, Form, Link, useSearchParams } from 'react-router';
 
-import { IdeaCard } from '~/features/ideas/components/idea-card';
 import { Hero } from '~/common/components/Hero';
 import { JobCard } from '~/features/jobs/components/job-card';
 import { Button } from '~/common/components/ui/button';
 import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from '../constants';
-import { cn } from '~/lib/utils';
+
 import type { Route } from './+types/jobs-page';
+import { z } from 'zod';
+import { getJobs } from '../queries';
 
-export function meta(args: Route.MetaArgs): Route.MetaDescriptors {
+export const meta: Route.MetaFunction = () => {
   return [
-    { title: 'Jobs | Product Hunt Clone' },
-    { name: 'description', content: 'Find the best jobs in tech' },
+    { title: 'Jobs | We-Create' },
+    { name: 'description', content: 'Find the best jobs in We-Create' },
   ];
-}
+};
 
-export default function JobsPage() {
+const searchParamsSchema = z.object({
+  type: z
+    .enum(JOB_TYPES.map((type) => type.value) as [string, ...string[]])
+    .optional(),
+  location: z
+    .enum(LOCATION_TYPES.map((type) => type.value) as [string, ...string[]])
+    .optional(),
+  salary: z.enum(SALARY_RANGE).optional(),
+});
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const url = new URL(request.url);
+  const { success, data: parsedData } = searchParamsSchema.safeParse(
+    Object.fromEntries(url.searchParams),
+  );
+  if (!success) {
+    throw data(
+      {
+        error_code: 'invalid_search_params',
+        message: 'Invalid search params',
+      },
+      { status: 400 },
+    );
+  }
+  const jobs = await getJobs({
+    limit: 40,
+    location: parsedData.location,
+    type: parsedData.type,
+    salary: parsedData.salary,
+  });
+  return { jobs };
+};
+
+export default function JobsPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-
   const onFilterChange = (key: string, value: string) => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set(key, value);
-    setSearchParams(newParams);
+    searchParams.set(key, value);
+    setSearchParams(searchParams);
   };
 
   return (
@@ -33,18 +65,18 @@ export default function JobsPage() {
       <div className="grid grid-cols-1 xl:grid-cols-6 gap-20 items-start">
         {/* Left: Job cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl: col-span-4 gap-3">
-          {Array.from({ length: 10 }).map((_, index) => (
+          {loaderData.jobs.map((job) => (
             <JobCard
-              key={`ideaId-${index}`}
-              id={`ideaId-${index}`}
-              title="Nurse and Occupational Therapist powered by AI"
-              company="We-Create"
-              companyLogoUrl="https://via.placeholder.com/150"
-              companyHq="Auckland, New Zealand"
-              type="Full-time"
-              positionLocation="Remote"
-              salary="100,000 - 120,000"
-              postedAt="12 hours ago"
+              key={job.job_id}
+              id={job.job_id}
+              company={job.company_name}
+              companyLogoUrl={job.company_logo}
+              companyHq={job.company_location}
+              title={job.position}
+              postedAt={job.created_at}
+              type={job.job_type}
+              positionLocation={job.location}
+              salary={job.salary_range}
             />
           ))}
         </div>
