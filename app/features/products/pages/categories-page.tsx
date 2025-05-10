@@ -60,8 +60,6 @@ export default function CategoriesPage({ loaderData }: Route.ComponentProps) {
               id={category.category_id}
               name={category.name}
               description={category.description}
-              icon={category.icon}
-              count={category.count}
             />
           ))}
         </div>

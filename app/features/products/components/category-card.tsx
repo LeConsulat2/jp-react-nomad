@@ -13,17 +13,9 @@ export interface CategoryCardProps {
   id: number;
   name: string;
   description: string;
-  icon: LucideIcon;
-  count: number;
 }
 
-export function CategoryCard({
-  id,
-  name,
-  description,
-
-  count,
-}: CategoryCardProps) {
+export function CategoryCard({ id, name, description }: CategoryCardProps) {
   return (
     <Link
       to={`/products/categories/${id}`}
@@ -37,7 +29,7 @@ export function CategoryCard({
         <CardContent className="pt-4 text-center">
           <h2 className="text-xl font-semibold">{name}</h2>
           <p className="text-sm text-muted-foreground mt-1">{description}</p>
-          <p className="text-sm text-muted-foreground mt-1">{count} products</p>
+          <p className="text-sm text-muted-foreground mt-1">products</p>
         </CardContent>
 
         <CardFooter className="flex justify-center pb-4">

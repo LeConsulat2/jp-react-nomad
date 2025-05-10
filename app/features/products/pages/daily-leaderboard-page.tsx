@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import type { Route } from './+types/daily-leaderboard-page';
 import { data, isRouteErrorResponse, Link } from 'react-router';
-import { date, z } from 'zod';
+import { z } from 'zod';
 import { Hero } from '~/common/components/Hero';
 import { ProductCard } from '../components/product-card';
 import { Button } from '~/common/components/ui/button';
