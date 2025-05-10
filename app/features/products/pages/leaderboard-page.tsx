@@ -146,15 +146,7 @@ export default function LeaderboardPage({ loaderData }: Route.ComponentProps) {
           />
         ))}
         <Button variant="link" asChild className="text-lg self-center">
-          <Link
-            to="/products/leaderboards/yearly"
-            onClick={(e) => {
-              // React Router의 기본 동작 방지
-              e.preventDefault();
-              // 브라우저 기본 네비게이션 사용
-              window.location.href = '/products/leaderboards/yearly';
-            }}
-          >
+          <Link to="/products/leaderboards/yearly">
             Explore all products &rarr;
           </Link>
         </Button>
