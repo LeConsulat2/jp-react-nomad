@@ -58,7 +58,6 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
                 <Search className="w-5 h-5" />
               </span>
               <Input
-                type="text"
                 name="query"
                 className="pl-10 pr-4 py-2 text-base focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 placeholder="Search for portfolios..."
@@ -76,8 +75,8 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
       <div className="mt-10 space-y-6 w-full max-w-4xl mx-auto">
         {loaderData.products.map((product) => (
           <ProductCard
-            key={`productId-${product.product_id}`}
-            id={`productId-${product.product_id}`}
+            key={product.product_id}
+            id={product.product_id}
             name={product.name}
             description={product.tagline}
             reviewsCount={product.reviews}
