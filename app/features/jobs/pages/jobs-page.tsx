@@ -1,5 +1,6 @@
 import { data, Form, Link, useSearchParams } from 'react-router';
 
+import { IdeaCard } from '~/features/ideas/components/idea-card';
 import { Hero } from '~/common/components/Hero';
 import { JobCard } from '~/features/jobs/components/job-card';
 import { Button } from '~/common/components/ui/button';
@@ -51,20 +52,34 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 export default function JobsPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const onFilterChange = (key: string, value: string) => {
-    searchParams.set(key, value);
+
+  const onFilterToggle = (key: string, value: string) => {
+    const currentValue = searchParams.get(key);
+    if (currentValue === value) {
+      // 🌸 이미 선택된 값 클릭 → 제거
+      searchParams.delete(key);
+    } else {
+      // 🌸 다른 값 클릭 → 값 설정
+      searchParams.set(key, value);
+    }
+    setSearchParams(searchParams);
+  };
+
+  const onResetFilters = () => {
+    searchParams.delete('type'); // 🌸 type 초기화
+    searchParams.delete('location'); // 🌸 location 초기화
+    searchParams.delete('salary'); // 🌸 salary 초기화
     setSearchParams(searchParams);
   };
 
   return (
     <div className="space-y-20">
-      {/* 여기가 중앙 타이틀 레이아웃 보이는곳 시작 */}
+      {/* 중앙 타이틀 */}
       <Hero title="Jobs" subtitle="Find and apply for jobs" />
-      {/* 여기가 중앙 타이틀 레이아웃 보이는곳 끝 */}
 
       <div className="grid grid-cols-1 xl:grid-cols-6 gap-20 items-start">
-        {/* Left: Job cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl: col-span-4 gap-3">
+        {/* Left: Job Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:col-span-4 gap-3">
           {loaderData.jobs.map((job) => (
             <JobCard
               key={job.job_id}
@@ -81,16 +96,16 @@ export default function JobsPage({ loaderData }: Route.ComponentProps) {
           ))}
         </div>
 
-        {/* Right: Filter sidebar */}
-        <div className="xl: col-span-2 flex flex-col gap-10">
-          {/* Filter: Type */}
+        {/* Right: Filter Sidebar (세로 정렬로 개선) */}
+        <div className="xl:col-span-2 flex flex-col gap-8">
+          {/* Type */}
           <div className="flex flex-col gap-2.5">
             <h4 className="text-sm font-medium">Type</h4>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex gap-2">
               {JOB_TYPES.map((type) => (
                 <Button
                   key={type.value}
-                  onClick={() => onFilterChange('type', type.value)}
+                  onClick={() => onFilterToggle('type', type.value)}
                   variant={
                     type.value === searchParams.get('type')
                       ? 'default'
@@ -103,14 +118,14 @@ export default function JobsPage({ loaderData }: Route.ComponentProps) {
             </div>
           </div>
 
-          {/* Filter: Location */}
+          {/* Location */}
           <div className="flex flex-col gap-2.5">
             <h4 className="text-sm font-medium">Location</h4>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex gap-2">
               {LOCATION_TYPES.map((location) => (
                 <Button
                   key={location.value}
-                  onClick={() => onFilterChange('location', location.value)}
+                  onClick={() => onFilterToggle('location', location.value)}
                   variant={
                     location.value === searchParams.get('location')
                       ? 'default'
@@ -123,14 +138,14 @@ export default function JobsPage({ loaderData }: Route.ComponentProps) {
             </div>
           </div>
 
-          {/* Filter: Salary-Range */}
+          {/* Salary Range */}
           <div className="flex flex-col gap-2.5">
             <h4 className="text-sm font-medium">Salary-Range</h4>
-            <div className="flex flex-wrap gap-2 sticky top-20">
+            <div className="flex flex-wrap gap-2">
               {SALARY_RANGE.map((salary) => (
                 <Button
                   key={salary}
-                  onClick={() => onFilterChange('salary', salary)}
+                  onClick={() => onFilterToggle('salary', salary)}
                   variant={
                     salary === searchParams.get('salary')
                       ? 'default'
@@ -141,6 +156,13 @@ export default function JobsPage({ loaderData }: Route.ComponentProps) {
                 </Button>
               ))}
             </div>
+          </div>
+
+          {/* Reset Button */}
+          <div className="flex justify-start pt-4 ">
+            <Button variant="destructive" onClick={onResetFilters}>
+              Reset Filters
+            </Button>
           </div>
         </div>
       </div>
