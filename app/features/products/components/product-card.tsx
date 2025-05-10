@@ -11,7 +11,7 @@ import { ChevronUpIcon, EyeIcon, MessageCircleIcon } from 'lucide-react'; // 아
 
 // ProductCard가 받아야 할 모든 prop을 정의합니다.
 interface ProductCardProps {
-  id: string; // 상품 상세 페이지로 이동할 때 사용할 고유 ID
+  id: number | string; // 상품 상세 페이지로 이동할 때 사용할 고유 ID
   name: string; // 상품 이름
   description: string; // 상품 설명
   reviewsCount: string; // 댓글 개수

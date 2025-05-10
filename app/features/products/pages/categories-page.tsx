@@ -14,6 +14,7 @@ import {
   HeartPulse,
 } from 'lucide-react';
 import { CategoryCard } from '../components/category-card';
+import { getCategories } from '../queries';
 
 export const meta: Route.MetaFunction = () => [
   { title: 'Categories | We-Create' },
@@ -21,23 +22,22 @@ export const meta: Route.MetaFunction = () => [
 ];
 
 // Sample categories data
-const categories = [
-  { id: 'design', name: 'Design Tools', icon: Palette, count: 240 },
-  { id: 'dev', name: 'Developer Tools', icon: Code, count: 185 },
-  { id: 'photography', name: 'Photography', icon: Image, count: 156 },
-  { id: 'productivity', name: 'Productivity', icon: Briefcase, count: 132 },
-  { id: 'music', name: 'Music & Audio', icon: Music, count: 121 },
-  { id: 'video', name: 'Video & Film', icon: Film, count: 98 },
-  { id: 'books', name: 'Books & Writing', icon: Book, count: 87 },
-  { id: 'health', name: 'Health & Fitness', icon: HeartPulse, count: 76 },
-  { id: 'ui', name: 'UI Components', icon: Layout, count: 65 },
-];
+// const categories = [
+//   { id: 'design', name: 'Design Tools', icon: Palette, count: 240 },
+//   { id: 'dev', name: 'Developer Tools', icon: Code, count: 185 },
+//   { id: 'photography', name: 'Photography', icon: Image, count: 156 },
+//   { id: 'productivity', name: 'Productivity', icon: Briefcase, count: 132 },
+//   { id: 'music', name: 'Music & Audio', icon: Music, count: 121 },
+//   { id: 'video', name: 'Video & Film', icon: Film, count: 98 },
+//   { id: 'books', name: 'Books & Writing', icon: Book, count: 87 },
+//   { id: 'health', name: 'Health & Fitness', icon: HeartPulse, count: 76 },
+//   { id: 'ui', name: 'UI Components', icon: Layout, count: 65 },
+// ];
 
-export function loader({ request }: Route.LoaderArgs) {
-  return {
-    categories, // Now returning our sample data
-  };
-}
+export const loader = async () => {
+  const categories = await getCategories();
+  return { categories };
+};
 
 export default function CategoriesPage({ loaderData }: Route.ComponentProps) {
   return (
@@ -54,11 +54,12 @@ export default function CategoriesPage({ loaderData }: Route.ComponentProps) {
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-          {categories.map((category) => (
+          {loaderData.categories.map((category) => (
             <CategoryCard
-              key={category.id}
-              id={category.id}
+              key={category.category_id}
+              id={category.category_id}
               name={category.name}
+              description={category.description}
               icon={category.icon}
               count={category.count}
             />

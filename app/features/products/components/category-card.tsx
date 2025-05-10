@@ -10,8 +10,9 @@ import {
 import { Button } from '~/common/components/ui/button';
 
 export interface CategoryCardProps {
-  id: string;
+  id: number;
   name: string;
+  description: string;
   icon: LucideIcon;
   count: number;
 }
@@ -19,7 +20,8 @@ export interface CategoryCardProps {
 export function CategoryCard({
   id,
   name,
-  icon: Icon,
+  description,
+
   count,
 }: CategoryCardProps) {
   return (
@@ -29,15 +31,12 @@ export function CategoryCard({
     >
       <Card className="h-full border-2 hover:border-primary overflow-hidden">
         <CardHeader className="bg-muted/30 pb-4">
-          <div className="flex justify-center p-4">
-            <div className="rounded-full bg-gradient-to-tr from-primary/20 to-background/30 p-6">
-              <Icon className="size-8 text-primary" />
-            </div>
-          </div>
+          <div className="flex justify-center p-4"></div>
         </CardHeader>
 
         <CardContent className="pt-4 text-center">
           <h2 className="text-xl font-semibold">{name}</h2>
+          <p className="text-sm text-muted-foreground mt-1">{description}</p>
           <p className="text-sm text-muted-foreground mt-1">{count} products</p>
         </CardContent>
 
