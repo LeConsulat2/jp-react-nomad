@@ -101,7 +101,7 @@ export const getProductsBySearch = async ({
     .select(productListSelect)
     // .ilike('name', `%${query}%`)
     // .ilike('tagline', `%${query}%`)
-    .or(`ilike.name.%${query}%, ilike.tagline.%${query}%`)
+    .or(`name.ilike.%${query}%, tagline.ilike.%${query}%`)
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
   if (error) throw error;
   return data;
