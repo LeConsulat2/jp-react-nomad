@@ -7,6 +7,7 @@ import { Input } from '~/common/components/ui/input';
 import { Search } from 'lucide-react';
 import { ProductCard } from '../components/product-card';
 import ProductPagination from '~/common/components/product-pagination';
+import { getPagesBySearch, getProductsBySearch } from '../queries';
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -20,16 +21,23 @@ const paramsSchema = z.object({
   page: z.coerce.number().optional().default(1),
 });
 
-export function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const { success, data: parsedData } = paramsSchema.safeParse(
     Object.fromEntries(url.searchParams),
   );
   if (!success) {
     throw new Error('Invalid params');
-  } else {
-    return parsedData;
   }
+  if (parsedData.query === '') {
+    return { products: [], totalPages: 1 };
+  }
+  const products = await getProductsBySearch({
+    query: parsedData.query,
+    page: parsedData.page,
+  });
+  const totalPages = await getPagesBySearch({ query: parsedData.query });
+  return { products, totalPages };
 }
 
 export default function SearchPage({ loaderData }: Route.ComponentProps) {
@@ -66,22 +74,22 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
 
       {/* Search Results */}
       <div className="mt-10 space-y-6 w-full max-w-4xl mx-auto">
-        {Array.from({ length: 11 }).map((_, index) => (
+        {loaderData.products.map((product) => (
           <ProductCard
-            key={`productId-${index}`}
-            id={`productId-${index}`}
-            name="Portfolio Name"
-            description="Portfolio Description"
-            reviewsCount="5"
-            viewsCount="1000"
-            votesCount="100"
+            key={`productId-${product.product_id}`}
+            id={`productId-${product.product_id}`}
+            name={product.name}
+            description={product.tagline}
+            reviewsCount={product.reviews}
+            viewsCount={product.views}
+            votesCount={product.upvotes}
           />
         ))}
       </div>
 
       {/* Pagination */}
       <div className="mt-12 flex justify-center">
-        <ProductPagination totalPages={9} />
+        <ProductPagination totalPages={loaderData.totalPages} />
       </div>
     </div>
   );
