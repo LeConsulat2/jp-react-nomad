@@ -1,4 +1,4 @@
-export const PRODUCT_STAGE = [
+export const PRODUCT_STAGES = [
   { label: 'Idea', value: 'idea' },
   { label: 'Prototype', value: 'prototype' },
   { label: 'MVP', value: 'mvp' },
