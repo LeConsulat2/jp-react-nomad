@@ -10,6 +10,7 @@ upvotes:stats->>upvotes,
 views:stats->>views,
 reviews:stats->>reviews
 `;
+
 export const getProductsByDateRange = async ({
   startDate,
   endDate,
@@ -116,4 +117,14 @@ export const getPagesBySearch = async ({ query }: { query: string }) => {
   if (error) throw error;
   if (!count) return 1;
   return Math.ceil(count / PAGE_SIZE);
+};
+
+export const getProductById = async (productId: number) => {
+  const { data, error } = await client
+    .from('product_overview_view')
+    .select('*')
+    .eq('product_id', productId)
+    .single();
+  if (error) throw error;
+  return data;
 };
