@@ -1,16 +1,29 @@
 import { Badge } from '~/common/components/ui/badge';
-import type { Route } from '../../../common/+types/route-types';
 import { DotIcon } from 'lucide-react';
 import { Button } from '~/common/components/ui/button';
+import type { Route } from './+types/job-page';
+import { getJobById } from '../queries';
+import { z } from 'zod';
+import { DateTime } from 'luxon';
 
-export function meta(args: Route.MetaArgs): Route.MetaDescriptors {
-  return [
-    { title: 'Job Details' },
-    { name: 'description', content: 'View job details' },
-  ];
-}
+export const meta: Route.MetaFunction = () => {
+  return [{ title: 'Job Details | We-Create' }];
+};
 
-export default function JobPage() {
+const paramsSchema = z.object({
+  jobId: z.coerce.number(),
+});
+
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const { data, success } = paramsSchema.safeParse(params);
+  if (!success) {
+    throw new Response('Invalid job id', { status: 400 });
+  }
+  const job = await getJobById(data.jobId);
+  return { job };
+};
+
+export default function JobPage({ loaderData }: Route.ComponentProps) {
   return (
     <div>
       <h1>Job Details</h1>
@@ -24,45 +37,34 @@ export default function JobPage() {
           <div>
             <div className="size-40 bg-white rounded-full overflow-hidden relative left-10 shadow-lg">
               <img
-                src="https://images.unsplash.com/photo-1603570426705-d4156b89f3b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                src={loaderData.job.company_logo}
                 alt="Counselling Office"
                 className="object-cover"
               />
             </div>
-            <h1 className="text-4xl font-bold">Counsellor</h1>
+            <h1 className="text-4xl font-bold">{loaderData.job.position}</h1>
             <h4 className="text-lg text-muted-foreground">
-              Health New Zealand
+              {loaderData.job.company_name}
             </h4>
           </div>
 
           {/* Badges */}
-          <div className="flex gap-2">
-            <Badge variant="secondary">Full-time</Badge>
-            <Badge variant="secondary">On-site</Badge>
+          <div className="flex gap-2 capitalize">
+            <Badge variant="secondary">{loaderData.job.job_type}</Badge>
+            <Badge variant="secondary">{loaderData.job.location}</Badge>
           </div>
 
           {/* Overview */}
           <div className="space-y-2.5">
             <h4 className="text-2xl font-bold">Overview</h4>
-            <p className="text-lg">
-              We are seeking a compassionate and skilled Counsellor to join our
-              mental health services team. You will play a pivotal role in
-              providing emotional support and therapeutic interventions for our
-              diverse client base.
-            </p>
+            <p className="text-lg">{loaderData.job.overview}</p>
           </div>
 
           {/* Responsibilities */}
           <div className="space-y-2.5">
             <h4 className="text-2xl font-bold">Responsibilities</h4>
             <ul className="text-lg list-disc list-inside">
-              {[
-                'Provide individual and group counselling sessions',
-                'Develop treatment plans and monitor client progress',
-                'Collaborate with multidisciplinary teams for holistic care',
-                'Maintain accurate and confidential client records',
-                'Participate in case reviews and professional development',
-              ].map((item) => (
+              {loaderData.job.responsibilities.split(',').map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
@@ -72,13 +74,7 @@ export default function JobPage() {
           <div className="space-y-2.5">
             <h4 className="text-2xl font-bold">Qualifications</h4>
             <ul className="text-lg list-disc list-inside">
-              {[
-                "Bachelor's or Master's degree in Counselling or Psychology",
-                'Current registration with NZAC or equivalent body',
-                'Minimum 2 years clinical counselling experience',
-                'Strong interpersonal and communication skills',
-                'Commitment to cultural competency and inclusive practice',
-              ].map((item) => (
+              {loaderData.job.qualifications.split(',').map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
@@ -88,13 +84,7 @@ export default function JobPage() {
           <div className="space-y-2.5">
             <h4 className="text-2xl font-bold">Benefits</h4>
             <ul className="text-lg list-disc list-inside">
-              {[
-                'Competitive salary and professional development allowance',
-                'Paid supervision and ongoing training opportunities',
-                'Wellbeing initiatives and employee assistance programme',
-                'Flexible work arrangements where possible',
-                'Supportive and collaborative team environment',
-              ].map((item) => (
+              {loaderData.job.benefits.split(',').map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
@@ -104,13 +94,7 @@ export default function JobPage() {
           <div className="space-y-2.5">
             <h4 className="text-2xl font-bold">Key Skills</h4>
             <ul className="text-lg list-disc list-inside">
-              {[
-                'Empathy and active listening',
-                'Strong ethical and professional standards',
-                'Crisis management and de-escalation techniques',
-                'Adaptability in a dynamic clinical environment',
-                'Ability to work independently and within a team',
-              ].map((item) => (
+              {loaderData.job.skills.split(',').map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
@@ -121,22 +105,29 @@ export default function JobPage() {
         <div className="col-span-2 space-y-5 mt-32 sticky top-20 p-6 border rounded-lg shadow-md">
           <div className="flex flex-col">
             <span className="text-sm text-muted-foreground">Avg. Salary</span>
-            <span className="text-2xl font-medium">$75,000 - $90,000</span>
+            <span className="text-2xl font-medium capitalize">
+              {loaderData.job.salary_range}
+            </span>
           </div>
           <div className="flex flex-col">
-            <span className="text-sm text-muted-foreground">Location</span>
+            <span className="text-sm text-muted-foreground">
+              {loaderData.job.location}
+            </span>
             <span className="text-2xl font-medium">Auckland, NZ</span>
           </div>
           <div className="flex flex-col">
             <span className="text-sm text-muted-foreground">Type</span>
-            <span className="text-2xl font-medium">Full-time</span>
+            <span className="text-2xl font-medium capitalize">
+              {loaderData.job.job_type}
+            </span>
           </div>
           <div className="flex">
             <span className="text-sm text-muted-foreground">
-              Posted 5 days ago
+              Posted{''}{' '}
+              {DateTime.fromISO(loaderData.job.created_at).toRelative()}
             </span>
             <DotIcon className="size-4 mx-1" />
-            <span className="text-sm text-muted-foreground">247 views</span>
+            <span className="text-sm text-muted-foreground">100 views</span>
           </div>
           <Button className="w-full">Apply Now</Button>
         </div>
