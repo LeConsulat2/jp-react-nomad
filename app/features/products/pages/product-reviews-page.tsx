@@ -1,8 +1,18 @@
 import { Button } from '~/common/components/ui/button';
 import { ReviewCard } from '../components/review-card';
-import { Dialog, DialogTrigger } from '~/common/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '~/common/components/ui/dialog';
+
+import { useOutletContext } from 'react-router';
+import type { Route } from './+types/product-reviews-page';
+import { getReviews } from '../queries';
 import CreateReviewDialogue from '../components/create-review-dialogue';
-import { NavLink, useParams } from 'react-router';
 
 export function meta() {
   return [
@@ -11,70 +21,43 @@ export function meta() {
   ];
 }
 
-export default function ProductReviewsPage() {
-  const { productId } = useParams();
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const reviews = await getReviews(Number(params.productId));
+  return { reviews };
+};
 
+export default function ProductReviewsPage({
+  loaderData,
+}: Route.ComponentProps) {
+  const { review_count } = useOutletContext<{
+    review_count: string;
+  }>();
   return (
     <Dialog>
       <div className="space-y-10 max-w-xl">
-        {/* Navigation */}
-        <div className="flex gap-2">
-          <NavLink
-            to={`/products/${productId}/overview`}
-            className={({ isActive }) =>
-              `
-              text-sm px-4 py-2 rounded-lg border 
-              transition shadow-sm
-              ${
-                isActive
-                  ? 'bg-primary text-primary-foreground border-primary shadow-md'
-                  : 'bg-muted text-muted-foreground border-transparent hover:border-muted-foreground'
-              }
-              `
-            }
-          >
-            Overview
-          </NavLink>
-
-          <NavLink
-            to={`/products/${productId}/reviews`}
-            className={({ isActive }) =>
-              `
-              text-sm px-4 py-2 rounded-lg border 
-              transition shadow-sm
-              ${
-                isActive
-                  ? 'bg-primary text-primary-foreground border-primary shadow-md'
-                  : 'bg-muted text-muted-foreground border-transparent hover:border-muted-foreground'
-              }
-              `
-            }
-          >
-            Reviews
-          </NavLink>
-        </div>
-
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">10 Reviews </h2>
-          <DialogTrigger>
+          <h2 className="text-2xl font-bold">
+            {review_count} {review_count === '1' ? 'Review' : 'Reviews'}
+          </h2>
+          <DialogTrigger asChild>
             <Button variant={'secondary'}>Write a review</Button>
           </DialogTrigger>
         </div>
         <div className="space-y-20">
-          {Array.from({ length: 10 }).map((_, i) => (
+          {loaderData.reviews.map((review) => (
             <ReviewCard
-              key={i}
-              username="John Doe"
-              handle="@username"
-              avatarUrl="https://github.com/facebook.png"
-              rating={5}
-              content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
-              postedAt="10 days ago"
+              key={review.review_id}
+              username={review.user.name}
+              handle={review.user.username}
+              avatarUrl={review.user.avatar}
+              rating={review.rating}
+              content={review.review}
+              postedAt={review.created_at}
             />
           ))}
         </div>
-        <CreateReviewDialogue />
       </div>
+      <CreateReviewDialogue />
     </Dialog>
   );
 }

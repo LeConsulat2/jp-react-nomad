@@ -49,6 +49,7 @@ export const getProductPagesByDateRange = async ({
   if (!count) return 1;
   return Math.ceil(count / PAGE_SIZE);
 };
+
 export const getCategories = async () => {
   const { data, error } = await client
     .from('categories')
@@ -56,6 +57,7 @@ export const getCategories = async () => {
   if (error) throw error;
   return data;
 };
+
 export const getCategory = async (categoryId: number) => {
   const { data, error } = await client
     .from('categories')
@@ -65,6 +67,7 @@ export const getCategory = async (categoryId: number) => {
   if (error) throw error;
   return data;
 };
+
 export const getProductsByCategory = async ({
   categoryId,
   page,
@@ -80,6 +83,7 @@ export const getProductsByCategory = async ({
   if (error) throw error;
   return data;
 };
+
 export const getCategoryPages = async (categoryId: number) => {
   const { count, error } = await client
     .from('products')
@@ -100,8 +104,6 @@ export const getProductsBySearch = async ({
   const { data, error } = await client
     .from('products')
     .select(productListSelect)
-    // .ilike('name', `%${query}%`)
-    // .ilike('tagline', `%${query}%`)
     .or(`name.ilike.%${query}%, tagline.ilike.%${query}%`)
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
   if (error) throw error;
@@ -111,9 +113,8 @@ export const getProductsBySearch = async ({
 export const getPagesBySearch = async ({ query }: { query: string }) => {
   const { count, error } = await client
     .from('products')
-    .select('product_id', { count: 'exact', head: true })
+    .select(`product_id`, { count: 'exact', head: true })
     .or(`name.ilike.%${query}%, tagline.ilike.%${query}%`);
-
   if (error) throw error;
   if (!count) return 1;
   return Math.ceil(count / PAGE_SIZE);
@@ -125,6 +126,24 @@ export const getProductById = async (productId: number) => {
     .select('*')
     .eq('product_id', productId)
     .single();
+  if (error) throw error;
+  return data;
+};
+export const getReviews = async (productId: number) => {
+  const { data, error } = await client
+    .from('reviews')
+    .select(
+      `
+        review_id,
+        rating,
+        review,
+        created_at,
+        user:profiles!inner(
+          name,username,avatar
+        )
+      `,
+    )
+    .eq('product_id', productId);
   if (error) throw error;
   return data;
 };
