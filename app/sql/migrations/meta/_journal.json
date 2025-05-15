@@ -85,6 +85,20 @@
       "when": 1746682908775,
       "tag": "0011_thin_thanos",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1747271563963,
+      "tag": "0012_rapid_hellcat",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1747272416608,
+      "tag": "0013_previous_skullbuster",
+      "breakpoints": true
     }
   ]
 }

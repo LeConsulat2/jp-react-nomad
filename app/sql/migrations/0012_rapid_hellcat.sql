@@ -1,0 +1,1 @@
+-- placeholder: 0012_rapid_hellcat.sql intentionally left blank
