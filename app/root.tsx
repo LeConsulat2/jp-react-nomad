@@ -13,6 +13,7 @@ import type { Route } from './+types/root';
 import './app.css';
 import Navigation from './common/components/navigation';
 import { Settings } from 'luxon';
+import { makeSSRClient } from './supa-client';
 
 // ==================================================
 // 🌐 글로벌 링크 설정 (Google Fonts 연결)
@@ -53,20 +54,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const {
+    data: { user },
+  } = await client.auth.getUser();
+  return { user };
+};
+
 // ==================================================
 // 🏡 App 컴포넌트 (메인 아웃렛 + 네비게이션)
 // ==================================================
-export default function App() {
+export default function App({ loaderData }: Route.ComponentProps) {
   const { pathname } = useLocation();
   const navigation = useNavigation();
   const isLoading = navigation.state === 'loading';
+  const isLoggedIn = loaderData.user !== null;
   return (
     <div className={pathname.includes('/auth/') ? '' : 'py-28 px-5 lg:px-20'}>
       {pathname.includes('/auth') ? null : (
         <Navigation
-          isLoggedIn={true}
-          hasNotifications={true}
-          hasMessages={true}
+          isLoggedIn={isLoggedIn}
+          hasNotifications={false}
+          hasMessages={false}
         />
       )}
 
