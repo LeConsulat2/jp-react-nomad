@@ -1,11 +1,12 @@
 import { Form } from 'react-router';
 
 import type { Route } from './+types/submit-job-page';
-import { Hero } from '~/common/components/hero';
+
 import InputPair from '~/common/components/ui/input-pair';
 import SelectPair from '~/common/components/select-pair';
 import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from '../constants';
 import { Button } from '~/common/components/ui/button';
+import { Hero } from '~/common/components/Hero';
 
 export const meta: Route.MetaFunction = () => {
   return [

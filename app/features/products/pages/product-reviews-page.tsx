@@ -13,6 +13,7 @@ import { useOutletContext } from 'react-router';
 import type { Route } from './+types/product-reviews-page';
 import { getReviews } from '../queries';
 import CreateReviewDialogue from '../components/create-review-dialogue';
+import { makeSSRClient } from '~/supa-client';
 
 export function meta() {
   return [
@@ -21,8 +22,9 @@ export function meta() {
   ];
 }
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
-  const reviews = await getReviews(Number(params.productId));
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const reviews = await getReviews(client, Number(params.productId));
   return { reviews };
 };
 

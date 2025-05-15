@@ -5,6 +5,7 @@ import type { Route } from './+types/job-page';
 import { getJobById } from '../queries';
 import { z } from 'zod';
 import { DateTime } from 'luxon';
+import { makeSSRClient } from '~/supa-client';
 
 export const meta: Route.MetaFunction = () => {
   return [{ title: 'Job Details | We-Create' }];
@@ -14,12 +15,13 @@ const paramsSchema = z.object({
   jobId: z.coerce.number(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
   const { data, success } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Response('Invalid job id', { status: 400 });
   }
-  const job = await getJobById(data.jobId);
+  const job = await getJobById(client, data.jobId);
   return { job };
 };
 

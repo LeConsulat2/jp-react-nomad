@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { CategoryCard } from '../components/category-card';
 import { getCategories } from '../queries';
+import { makeSSRClient } from '~/supa-client';
 
 export const meta: Route.MetaFunction = () => [
   { title: 'Categories | We-Create' },
@@ -34,8 +35,9 @@ export const meta: Route.MetaFunction = () => [
 //   { id: 'ui', name: 'UI Components', icon: Layout, count: 65 },
 // ];
 
-export const loader = async () => {
-  const categories = await getCategories();
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const categories = await getCategories(client);
   return { categories };
 };
 

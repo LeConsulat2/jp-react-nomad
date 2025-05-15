@@ -1,3 +1,4 @@
+import { makeSSRClient } from '~/supa-client';
 import type { Route } from './+types/products-page';
 
 import type { MetaFunction } from '@react-router/types';
@@ -9,11 +10,13 @@ export function meta(): MetaFunction {
   ];
 }
 
-export function loader({ request }: Route.LoaderArgs) {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const products = await getProducts(client);
   return {
-    products: [], // Add products fetch logic
+    products,
   };
-}
+};
 
 export default function ProductsPage({ loaderData }: Route.ComponentProps) {
   return (

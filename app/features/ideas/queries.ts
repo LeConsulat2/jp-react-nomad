@@ -1,6 +1,11 @@
-import client from '~/supa-client';
+import pkg from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '~/supa-client';
 
-export const getGptIdeas = async ({ limit }: { limit: number }) => {
+export const getGptIdeas = async (
+  client: SupabaseClient<Database>,
+  { limit }: { limit: number },
+) => {
   const { data, error } = await client
     .from('gpt_ideas_view')
     .select('*')
@@ -11,7 +16,10 @@ export const getGptIdeas = async ({ limit }: { limit: number }) => {
   return data;
 };
 
-export const getGptIdea = async (ideaId: string) => {
+export const getGptIdea = async (
+  client: pkg.SupabaseClient<Database>,
+  ideaId: string,
+) => {
   const { data, error } = await client
     .from('gpt_ideas_view')
     .select('*')

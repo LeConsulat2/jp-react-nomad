@@ -2,6 +2,7 @@ import { Hero } from '~/common/components/Hero';
 import type { Route } from './+types/ideas-page';
 import { IdeaCard } from '~/features/ideas/components/idea-card';
 import { getGptIdeas } from '../queries';
+import { makeSSRClient } from '~/supa-client';
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -10,8 +11,9 @@ export const meta: Route.MetaFunction = () => {
   ];
 };
 
-export const loader = async () => {
-  const ideas = await getGptIdeas({ limit: 15 });
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const ideas = await getGptIdeas(client, { limit: 15 });
   return { ideas };
 };
 
