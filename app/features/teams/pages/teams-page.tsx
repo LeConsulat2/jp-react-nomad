@@ -2,12 +2,14 @@ import type { Route } from './+types/teams-page';
 import { TeamCard } from '~/features/teams/components/team-card';
 import { Hero } from '~/common/components/Hero';
 import { getTeams } from '../queries';
+import { makeSSRClient } from '~/supa-client';
 
 export const meta: Route.MetaFunction = () => [{ title: 'Teams | We-Create' }];
 
-export const loader = async () => {
-  const teams = await getTeams({ limit: 8 });
-  console.log('데이터 확인:', teams);
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const teams = await getTeams(client, { limit: 8 });
+
   return { teams };
 };
 
