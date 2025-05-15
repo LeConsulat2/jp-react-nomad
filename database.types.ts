@@ -33,6 +33,27 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          created_at: string | null
+          event_data: Json | null
+          event_id: string
+          event_type: Database["public"]["Enums"]["event_type"]
+        }
+        Insert: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_id?: string
+          event_type: Database["public"]["Enums"]["event_type"]
+        }
+        Update: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_id?: string
+          event_type?: Database["public"]["Enums"]["event_type"]
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
@@ -601,6 +622,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["profile_id"]
           },
+          {
+            foreignKeyName: "products_to_profiles"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["profile_id"]
+          },
         ]
       }
       profiles: {
@@ -830,9 +858,16 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      track_event: {
+        Args: {
+          event_type: Database["public"]["Enums"]["event_type"]
+          event_data: Json
+        }
+        Returns: undefined
+      }
     }
     Enums: {
+      event_type: "product_view" | "product_visit" | "profile_view"
       job_types: "full-time" | "part-time" | "contract"
       location: "remote" | "on-site" | "hybrid"
       notification_type: "follow" | "review" | "reply" | "mention"
@@ -965,6 +1000,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      event_type: ["product_view", "product_visit", "profile_view"],
       job_types: ["full-time", "part-time", "contract"],
       location: ["remote", "on-site", "hybrid"],
       notification_type: ["follow", "review", "reply", "mention"],
