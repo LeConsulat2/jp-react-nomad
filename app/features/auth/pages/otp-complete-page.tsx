@@ -5,7 +5,6 @@ import { Button } from '~/common/components/ui/button';
 import { z } from 'zod';
 import { makeSSRClient } from '~/supa-client';
 import { LoaderCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 export const meta: Route.MetaFunction = () => {
   return [{ title: 'Verify OTP - ProductHunt Clone' }];
@@ -47,19 +46,12 @@ export default function OtpPage({ actionData }: Route.ComponentProps) {
       : navigation.state === 'submitting';
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-white/20"
-      >
-        <h1 className="text-2xl font-semibold text-white text-center mb-2">
-          Confirm OTP
-        </h1>
-        <p className="text-sm text-gray-300 text-center mb-6">
-          Enter the OTP code sent to your email address.
-        </p>
+    <div className="flex flex-col relative items-center justify-center h-full">
+      <div className="flex items-center flex-col justify-center w-full max-w-md gap-10">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold">Verify One-Time Password</h1>
+          <p>Enter the OTP code from your email</p>
+        </div>
 
         <Form className="w-full space-y-4" method="post">
           <InputPair
@@ -88,7 +80,7 @@ export default function OtpPage({ actionData }: Route.ComponentProps) {
             placeholder="6-digit code"
           />
           {actionData && 'fieldErrors' in actionData && (
-            <p className="text-sm text-red-500">
+            <p className="text-red-500">
               {actionData.fieldErrors?.otp?.join(', ')}
             </p>
           )}
@@ -96,10 +88,7 @@ export default function OtpPage({ actionData }: Route.ComponentProps) {
             <p className="text-sm text-red-500">{actionData.verifyError}</p>
           )}
 
-          <Button
-            type="submit"
-            className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-lg transition"
-          >
+          <Button type="submit" className="w-full">
             {isSubmitting ? (
               <LoaderCircle className="animate-spin" />
             ) : (
@@ -107,7 +96,7 @@ export default function OtpPage({ actionData }: Route.ComponentProps) {
             )}
           </Button>
         </Form>
-      </motion.div>
+      </div>
     </div>
   );
 }
