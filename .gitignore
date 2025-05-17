@@ -6,3 +6,8 @@
 /build/
 
 .env
+
+
+supabase-email-template-dark.html
+supabase-email-template-minimal.html
+supabase-email-template.html

@@ -32,19 +32,19 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   return redirect('/', { headers });
 };
 
-// export default function SocialCompletePage() {
-//   return (
-//     <div className="space-y-6">
-//       <div className="text-center">
-//         <h1 className="text-2xl font-bold">Complete Social Login</h1>
-//         <p className="text-sm text-gray-500">
-//           Finalizing your authentication...
-//         </p>
-//       </div>
+export default function SocialCompletePage() {
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold">Complete Social Login</h1>
+        <p className="text-sm text-gray-500">
+          Finalizing your authentication...
+        </p>
+      </div>
 
-//       <div className="flex justify-center">
-//         <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
-//       </div>
-//     </div>
-//   );
-// }
+      <div className="flex justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+      </div>
+    </div>
+  );
+}
