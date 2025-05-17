@@ -18,11 +18,13 @@ import { Textarea } from '~/common/components/ui/textarea';
 import { cn } from '~/lib/utils';
 import type { Route } from './+types/profile-layout';
 import { getUserProfile } from '../queries';
+import { makeSSRClient } from '~/supa-client';
 
-export const loader = async ({
-  params,
-}: Route.LoaderArgs & { params: { username: string } }) => {
-  const user = await getUserProfile(params.username);
+// Use a type assertion for params to include username
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const username = (params as { username: string }).username;
+  const { client } = makeSSRClient(request);
+  const user = await getUserProfile(client, username);
   return { user };
 };
 

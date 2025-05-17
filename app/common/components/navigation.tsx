@@ -150,8 +150,16 @@ export default function Navigation({
   isLoggedIn,
   hasNotifications,
   hasMessages,
+  username,
+  avatar,
+  name,
 }: {
   isLoggedIn: boolean;
+  hasNotifications: boolean;
+  hasMessages: boolean;
+  avatar?: string | null;
+  username?: string;
+  name?: string;
 }) {
   return (
     // 상단 네비게이션 바 전체 컨테이너 (고정 위치, 흐림 효과 포함)
@@ -240,17 +248,19 @@ export default function Navigation({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                {/* 유저 이미지 로딩 안될 때 대체 텍스트 */}
-                <AvatarFallback>No Pic</AvatarFallback>
+                {avatar ? (
+                  <AvatarImage src={avatar} />
+                ) : (
+                  <AvatarFallback>No Pic</AvatarFallback>
+                )}
               </Avatar>
             </DropdownMenuTrigger>
             {/* <DropdownMenuContent>...</DropdownMenuContent> */}
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel className="flex flex-col gap-2">
-                <span className="font-medium">Jonathan Park</span>
+                <span className="font-medium">{name}</span>
                 <span className="text-xs  text-muted-foreground">
-                  @username
+                  {username}
                 </span>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />

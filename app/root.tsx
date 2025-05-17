@@ -14,6 +14,7 @@ import './app.css';
 import Navigation from './common/components/navigation';
 import { Settings } from 'luxon';
 import { makeSSRClient } from './supa-client';
+import { getUserById } from './features/users/queries';
 
 // ==================================================
 // 🌐 글로벌 링크 설정 (Google Fonts 연결)
@@ -59,7 +60,11 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   const {
     data: { user },
   } = await client.auth.getUser();
-  return { user };
+  if (user) {
+    const profile = await getUserById(client, { id: user.id });
+    return { user, profile };
+  }
+  return { user: null, profile: null };
 };
 
 // ==================================================
@@ -77,6 +82,9 @@ export default function App({ loaderData }: Route.ComponentProps) {
           isLoggedIn={isLoggedIn}
           hasNotifications={false}
           hasMessages={false}
+          avatar={loaderData.profile?.avatar}
+          username={loaderData.profile?.username}
+          name={loaderData.profile?.name}
         />
       )}
 

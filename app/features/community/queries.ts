@@ -3,7 +3,11 @@ import type { Database } from '~/supa-client';
 import pkg from '@supabase/supabase-js';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-export const getTopics = async (client: SupabaseClient<Database>) => {
+export const getTopics = async (client: {
+  from: <T extends keyof Database['public']['Tables']>(
+    table: T,
+  ) => ReturnType<SupabaseClient<Database>['from']>;
+}) => {
   // await new Promise((resolve) => setTimeout(resolve, 4000));
   const { data, error } = await client.from('topics').select('name, slug');
   if (error) throw new Error(error.message);
@@ -11,7 +15,15 @@ export const getTopics = async (client: SupabaseClient<Database>) => {
 };
 
 export const getPosts = async (
-  client: SupabaseClient<Database>,
+  client: {
+    from: <
+      T extends
+        | keyof Database['public']['Tables']
+        | keyof Database['public']['Views'],
+    >(
+      table: T,
+    ) => ReturnType<SupabaseClient<Database>['from']>;
+  },
   {
     limit,
     sorting,
@@ -64,7 +76,15 @@ export const getPosts = async (
 };
 
 export const getPostById = async (
-  client: SupabaseClient<Database>,
+  client: {
+    from: <
+      T extends
+        | keyof Database['public']['Tables']
+        | keyof Database['public']['Views'],
+    >(
+      table: T,
+    ) => ReturnType<SupabaseClient<Database>['from']>;
+  },
   postId: number,
 ) => {
   const { data, error } = await client
@@ -77,7 +97,11 @@ export const getPostById = async (
 };
 
 export const getReplies = async (
-  client: SupabaseClient<Database>,
+  client: {
+    from: <T extends keyof Database['public']['Tables']>(
+      table: T,
+    ) => ReturnType<SupabaseClient<Database>['from']>;
+  },
   postId: number,
 ) => {
   const replyQuery = `
