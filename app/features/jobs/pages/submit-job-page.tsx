@@ -1,169 +1,274 @@
-import { Form } from 'react-router';
-
 import type { Route } from './+types/submit-job-page';
+import { Form, redirect } from 'react-router';
 
-import InputPair from '~/common/components/ui/input-pair';
 import SelectPair from '~/common/components/select-pair';
 import { JOB_TYPES, LOCATION_TYPES, SALARY_RANGE } from '../constants';
 import { Button } from '~/common/components/ui/button';
+import { makeSSRClient } from '~/supa-client';
+import { getLoggedInUserId } from '~/features/users/queries';
+import { z } from 'zod';
+import { jobTypes } from '../schema';
+import { createJob } from '../mutations';
 import { Hero } from '~/common/components/Hero';
+import InputPair from '~/common/components/ui/input-pair';
 
 export const meta: Route.MetaFunction = () => {
   return [
-    { title: 'Submit a Job' },
-    { name: 'description', content: 'Post a new job listing' },
+    { title: 'Post a Job | We-Create' },
+    {
+      name: 'description',
+      content: 'Reach out to the best developers in the world',
+    },
   ];
 };
 
-export default function SubmitJobPage() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  await getLoggedInUserId(client as any);
+};
+
+export const formSchema = z.object({
+  position: z.string().min(1, 'Position is required').max(40),
+  overview: z.string().min(1, 'Overview is required').max(400),
+  responsibilities: z.string().min(1, 'Responsibilities are required').max(400),
+  qualifications: z.string().min(1, 'Qualifications are required').max(400),
+  benefits: z.string().min(1, 'Benefits are required').max(400),
+  skills: z.string().min(1, 'Skills are required').max(400),
+  companyName: z.string().min(1, 'Company name is required').max(40),
+  companyLogoUrl: z
+    .string()
+    .min(1, 'Company logo URL is required')
+    .url({ message: 'Invalid URL format' })
+    .max(40),
+  companyLocation: z.string().min(1, 'Company location is required').max(40),
+  applyUrl: z
+    .string()
+    .min(1, 'Apply URL is required')
+    .url({ message: 'Invalid URL format' })
+    .max(40),
+  jobType: z.enum(JOB_TYPES.map((type) => type.value) as [string, ...string[]]),
+  jobLocation: z.enum(
+    LOCATION_TYPES.map((location) => location.value) as [string, ...string[]],
+  ),
+  salaryRange: z.enum(SALARY_RANGE as [string, ...string[]]),
+});
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { client } = makeSSRClient(request);
+  await getLoggedInUserId(client as any);
+  const formData = await request.formData();
+  const { success, data, error } = formSchema.safeParse(
+    Object.fromEntries(formData),
+  );
+  if (!success) {
+    return {
+      fieldErrors: error.flatten().fieldErrors,
+    };
+  }
+  const { job_id } = await createJob(client as any, data);
+  return redirect(`/jobs/${job_id}`);
+};
+
+export default function SubmitJobPage({ actionData }: Route.ComponentProps) {
   return (
-    <div className="space-y-20">
+    <div>
       <Hero
-        title="Submit a Job"
-        subtitle="Reach out to diverse audiences of our We-Create Page!"
+        title="Post a Job"
+        subtitle="Reach out to the best developers in the world"
       />
-      <Form className="max-w-screen-xl mx-auto">
-        <div className="grid grid-cols-3 gap-10">
+      <Form
+        className="max-w-screen-2xl flex flex-col items-center gap-10 mx-auto"
+        method="post"
+      >
+        <div className="grid grid-cols-3 w-full gap-10">
           <InputPair
-            id="position"
             label="Position"
-            description="(예: Occupational Therapist – Youth Services)"
+            description="(40 characters max)"
             name="position"
             maxLength={40}
             type="text"
+            id="position"
             required
-            placeholder="Occupational Therapist – Youth Services"
-            textArea
+            defaultValue="Senior React Developer"
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">{actionData.fieldErrors.position}</p>
+          )}
           <InputPair
             id="overview"
             label="Overview"
-            description="Brief summary of the role (max 1000 characters)"
+            description="(400 characters max)"
             name="overview"
-            maxLength={1000}
+            maxLength={400}
             type="text"
             required
-            placeholder="Provide occupational therapy for adolescents aged 12–24, supporting functional independence and wellbeing."
+            defaultValue="We are looking for a Senior React Developer"
             textArea
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">{actionData.fieldErrors.overview}</p>
+          )}
           <InputPair
             id="responsibilities"
             label="Responsibilities"
-            description="Key duties of the role (max 1000 characters)"
+            description="(400 characters max, comma separated)"
             name="responsibilities"
-            maxLength={1000}
+            maxLength={400}
             type="text"
             required
-            placeholder="Assess functional needs of adolescents (12–24), develop treatment plans, deliver interventions, collaborate with families and youth services."
+            defaultValue="Implement new features, Maintain code quality, etc."
             textArea
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">
+              {actionData.fieldErrors.responsibilities}
+            </p>
+          )}
           <InputPair
             id="qualifications"
             label="Qualifications"
-            description="Required qualifications and certifications (max 1000 characters)"
+            description="(400 characters max, comma separated)"
             name="qualifications"
-            maxLength={1000}
+            maxLength={400}
             type="text"
             required
-            placeholder="Bachelor's or Master's degree in Occupational Therapy, current NZOT registration, experience working with youth (12–24)."
+            defaultValue="3+ years of experience, Strong TypeScript skills, etc."
             textArea
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">
+              {actionData.fieldErrors.qualifications}
+            </p>
+          )}
           <InputPair
             id="benefits"
             label="Benefits"
-            description="Perks and benefits (max 1000 characters)"
+            description="(400 characters max, comma separated)"
             name="benefits"
-            maxLength={1000}
+            maxLength={400}
             type="text"
             required
-            placeholder="Paid supervision, professional development budget, flexible hours, supportive multidisciplinary team."
+            defaultValue="Flexible working hours, Health insurance, etc."
             textArea
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">{actionData.fieldErrors.benefits}</p>
+          )}
           <InputPair
             id="skills"
             label="Skills"
-            description="Key skills required (max 1000 characters)"
+            description="(400 characters max, comma separated)"
             name="skills"
-            maxLength={1000}
+            maxLength={400}
             type="text"
             required
-            placeholder="Empathy, youth engagement, cultural competency, strong communication, therapeutic creativity."
+            defaultValue="React, TypeScript, etc."
             textArea
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">{actionData.fieldErrors.skills}</p>
+          )}
           <InputPair
             id="companyName"
             label="Company Name"
-            description="Organization offering the role"
+            description="(40 characters max)"
             name="companyName"
             maxLength={40}
             type="text"
             required
-            placeholder="Health New Zealand"
+            defaultValue="wemake"
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">{actionData.fieldErrors.companyName}</p>
+          )}
           <InputPair
             id="companyLogoUrl"
             label="Company Logo URL"
-            description="Link to your company logo (optional)"
+            description="(40 characters max)"
             name="companyLogoUrl"
             type="url"
             required
-            placeholder="https://example.com/logo.png"
+            defaultValue="https://wemake.services/logo.png"
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">
+              {actionData.fieldErrors.companyLogoUrl}
+            </p>
+          )}
           <InputPair
             id="companyLocation"
             label="Company Location"
-            description="Location of the role"
+            description="(40 characters max)"
             name="companyLocation"
+            maxLength={40}
             type="text"
             required
-            placeholder="Auckland, New Zealand"
+            defaultValue="Remote, New York, etc."
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">
+              {actionData.fieldErrors.companyLocation}
+            </p>
+          )}
           <InputPair
             id="applyUrl"
             label="Apply URL"
-            description="Link to the application page"
+            description="(40 characters max)"
             name="applyUrl"
+            maxLength={40}
             type="url"
             required
-            placeholder="https://example.com/apply"
+            defaultValue="https://wemake.services/apply"
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">{actionData.fieldErrors.applyUrl}</p>
+          )}
           <SelectPair
-            label="Job type"
-            description="Select the type"
-            name="Job type"
+            label="Job Type"
+            description="Select the type of job"
+            name="jobType"
             required
-            placeholder="Select the type"
+            placeholder="Select the type of job"
             options={JOB_TYPES.map((type) => ({
               label: type.label,
               value: type.value,
             }))}
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">{actionData.fieldErrors.jobType}</p>
+          )}
           <SelectPair
             label="Job Location"
-            description="Select the location"
-            name="Job location"
+            description="Select the location of the job"
+            name="jobLocation"
             required
-            placeholder="Select the location"
+            placeholder="Select the location of the job"
             options={LOCATION_TYPES.map((location) => ({
               label: location.label,
               value: location.value,
             }))}
           />
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">{actionData.fieldErrors.jobLocation}</p>
+          )}
           <SelectPair
             label="Salary Range"
-            description="Select the salary range"
-            name="Salary range"
+            description="Select the salary range of the job"
+            name="salaryRange"
             required
-            placeholder="Select the salary range"
+            placeholder="Select the salary range of the job"
             options={SALARY_RANGE.map((salary) => ({
               label: salary,
               value: salary,
             }))}
           />
-          <Button type="submit" className="w-full max-w-full">
-            Submit
-          </Button>
+          {actionData && 'fieldErrors' in actionData && (
+            <p className="text-red-500">{actionData.fieldErrors.salaryRange}</p>
+          )}
         </div>
+        <Button type="submit" className="w-full max-w-sm" size="lg">
+          Post job for $100
+        </Button>
       </Form>
     </div>
   );

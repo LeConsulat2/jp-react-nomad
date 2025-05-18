@@ -11,6 +11,10 @@ export const JOB_TYPES = [
     label: 'Contract',
     value: 'contract',
   },
+  {
+    label: 'Freelance',
+    value: 'freelance',
+  },
 ] as const;
 
 export const LOCATION_TYPES = [
