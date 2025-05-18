@@ -1,29 +1,15 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { DateTime } from 'luxon';
 import type { Database } from '~/supa-client';
-import pkg from '@supabase/supabase-js';
-import type { SupabaseClient } from '@supabase/supabase-js';
 
-export const getTopics = async (client: {
-  from: <T extends keyof Database['public']['Tables']>(
-    table: T,
-  ) => ReturnType<SupabaseClient<Database>['from']>;
-}) => {
-  // await new Promise((resolve) => setTimeout(resolve, 4000));
+export const getTopics = async (client: SupabaseClient<Database>) => {
   const { data, error } = await client.from('topics').select('name, slug');
   if (error) throw new Error(error.message);
   return data;
 };
 
 export const getPosts = async (
-  client: {
-    from: <
-      T extends
-        | keyof Database['public']['Tables']
-        | keyof Database['public']['Views'],
-    >(
-      table: T,
-    ) => ReturnType<SupabaseClient<Database>['from']>;
-  },
+  client: SupabaseClient<Database>,
   {
     limit,
     sorting,
@@ -76,16 +62,8 @@ export const getPosts = async (
 };
 
 export const getPostById = async (
-  client: {
-    from: <
-      T extends
-        | keyof Database['public']['Tables']
-        | keyof Database['public']['Views'],
-    >(
-      table: T,
-    ) => ReturnType<SupabaseClient<Database>['from']>;
-  },
-  postId: number,
+  client: SupabaseClient<Database>,
+  { postId }: { postId: number },
 ) => {
   const { data, error } = await client
     .from('community_post_detail')
@@ -97,24 +75,19 @@ export const getPostById = async (
 };
 
 export const getReplies = async (
-  client: {
-    from: <T extends keyof Database['public']['Tables']>(
-      table: T,
-    ) => ReturnType<SupabaseClient<Database>['from']>;
-  },
-  postId: number,
+  client: SupabaseClient<Database>,
+  { postId }: { postId: number },
 ) => {
   const replyQuery = `
     post_reply_id,
     reply,
     created_at,
-    user: profiles (
+    user:profiles (
       name,
       avatar,
       username
     )
   `;
-
   const { data, error } = await client
     .from('post_replies')
     .select(
@@ -123,10 +96,10 @@ export const getReplies = async (
       post_replies (
         ${replyQuery}
       )
-    `,
+      `,
     )
-    .eq('post_id', postId);
-
+    .eq('post_id', postId)
+    .order('created_at', { ascending: false });
   if (error) throw error;
   return data;
 };

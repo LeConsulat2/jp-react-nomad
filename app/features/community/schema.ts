@@ -1,11 +1,11 @@
 import {
+  type AnyPgColumn,
   bigint,
   pgTable,
   primaryKey,
   text,
   timestamp,
   uuid,
-  type AnyPgColumn,
 } from 'drizzle-orm/pg-core';
 import { profiles } from '../users/schema';
 
@@ -23,12 +23,16 @@ export const posts = pgTable('posts', {
   upvotes: bigint({ mode: 'number' }).default(0),
   created_at: timestamp().notNull().defaultNow(),
   updated_at: timestamp().notNull().defaultNow(),
-  topic_id: bigint({ mode: 'number' }).references(() => topics.topic_id, {
-    onDelete: 'cascade',
-  }),
-  profile_id: uuid().references(() => profiles.profile_id, {
-    onDelete: 'cascade',
-  }),
+  topic_id: bigint({ mode: 'number' })
+    .references(() => topics.topic_id, {
+      onDelete: 'cascade',
+    })
+    .notNull(),
+  profile_id: uuid()
+    .references(() => profiles.profile_id, {
+      onDelete: 'cascade',
+    })
+    .notNull(),
 });
 
 export const postUpvotes = pgTable(
@@ -48,7 +52,10 @@ export const postReplies = pgTable('post_replies', {
   post_reply_id: bigint({ mode: 'number' })
     .primaryKey()
     .generatedAlwaysAsIdentity(),
-  post_id: bigint({ mode: 'number' }).references(
+  post_id: bigint({ mode: 'number' }).references(() => posts.post_id, {
+    onDelete: 'cascade',
+  }),
+  parent_id: bigint({ mode: 'number' }).references(
     (): AnyPgColumn => postReplies.post_reply_id,
     {
       onDelete: 'cascade',

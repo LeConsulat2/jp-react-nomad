@@ -17,18 +17,18 @@ import {
 } from '~/common/components/ui/avatar';
 import { Badge } from '~/common/components/ui/badge';
 import { Reply } from '~/features/community/components/reply';
-import { getPostById, getReplies } from '../queries';
 import { DateTime } from 'luxon';
 import { makeSSRClient } from '~/supa-client';
+import { getReplies, getPostById } from '../queries';
 
 export const meta: Route.MetaFunction = ({ params }) => {
   return [{ title: `${params.postId} | We-Create` }];
 };
 
-export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const { client } = makeSSRClient(request);
-  const post = await getPostById(client, Number(params.postId));
-  const replies = await getReplies(client, Number(params.postId));
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const { client, headers } = makeSSRClient(request);
+  const post = await getPostById(client, { postId: Number(params.postId) });
+  const replies = await getReplies(client, { postId: Number(params.postId) });
   return { post, replies };
 };
 
@@ -53,7 +53,7 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/community/postId">{loaderData.post.title}</Link>
+              <Link to={`/community/postId`}>{loaderData.post.title}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
         </BreadcrumbList>
@@ -72,10 +72,12 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
                   <span>{loaderData.post.author_name}</span>
                   <DotIcon className="size-5" />
                   <span>
-                    {DateTime.fromISO(loaderData.post.created_at).toRelative()}
+                    {DateTime.fromISO(loaderData.post.created_at, {
+                      zone: 'utc',
+                    }).toRelative({ unit: 'hours' })}
                   </span>
                   <DotIcon className="size-5" />
-                  <span>{loaderData.post.replies}</span>
+                  <span>{loaderData.post.replies} replies</span>
                 </div>
                 <p className="text-muted-foreground w-3/4">
                   {loaderData.post.content}
@@ -102,7 +104,7 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
                 <div className="flex flex-col gap-5">
                   {loaderData.replies.map((reply) => (
                     <Reply
-                      username={reply.user.username}
+                      username={reply.user.name}
                       avatarUrl={reply.user.avatar}
                       content={reply.reply}
                       timestamp={reply.created_at}
@@ -135,7 +137,10 @@ export default function PostPage({ loaderData }: Route.ComponentProps) {
           <div className="gap-2 text-sm flex flex-col">
             <span>
               🎂 Joined{' '}
-              {DateTime.fromISO(loaderData.post.author_created_at).toRelative()}
+              {DateTime.fromISO(loaderData.post.author_created_at, {
+                zone: 'utc',
+              }).toRelative({ unit: 'hours' })}{' '}
+              ago
             </span>
             <span>🚀 Launched {loaderData.post.products} products</span>
           </div>
