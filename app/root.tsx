@@ -61,7 +61,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     data: { user },
   } = await client.auth.getUser();
   if (user) {
-    const profile = await getUserById(client, { id: user.id });
+    const profile = await getUserById(client as any, { id: user.id });
     return { user, profile };
   }
   return { user: null, profile: null };
@@ -80,11 +80,11 @@ export default function App({ loaderData }: Route.ComponentProps) {
       {pathname.includes('/auth') ? null : (
         <Navigation
           isLoggedIn={isLoggedIn}
+          username={loaderData.profile?.username}
+          avatar={loaderData.profile?.avatar}
+          name={loaderData.profile?.name}
           hasNotifications={false}
           hasMessages={false}
-          avatar={loaderData.profile?.avatar}
-          username={loaderData.profile?.username}
-          name={loaderData.profile?.name}
         />
       )}
 

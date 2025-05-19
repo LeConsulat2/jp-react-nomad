@@ -17,8 +17,8 @@ export const meta: Route.MetaFunction = () => {
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
-  await getLoggedInUserId(client);
-  const topics = await getTopics(client);
+  await getLoggedInUserId(client as any);
+  const topics = await getTopics(client as any);
   return { topics };
 };
 
@@ -30,7 +30,7 @@ const formSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { client } = makeSSRClient(request);
-  const userId = await getLoggedInUserId(client);
+  const userId = await getLoggedInUserId(client as any);
   const formData = await request.formData();
   const { success, error, data } = formSchema.safeParse(
     Object.fromEntries(formData),
@@ -41,7 +41,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     };
   }
   const { title, category, content } = data;
-  const { post_id } = await createPost(client, {
+  const { post_id } = await createPost(client as any, {
     title,
     category,
     content,

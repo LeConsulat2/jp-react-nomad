@@ -15,19 +15,14 @@ export const createPost = async (
     userId: string;
   },
 ) => {
-  // createPost 내부
-  const { data: topics, error: topicsError } = await client
+  const { data: categoryData, error: categoryError } = await client
     .from('topics')
-    .select('topic_id, slug')
-    .eq('slug', category);
-
-  if (topicsError) throw topicsError;
-  if (!topics || topics.length === 0)
-    throw new Error('No topic found for slug: ' + category);
-  if (topics.length > 1)
-    throw new Error('Multiple topics found for slug: ' + category);
-
-  const categoryData = topics[0];
+    .select('topic_id')
+    .eq('slug', category)
+    .single();
+  if (categoryError) {
+    throw categoryError;
+  }
   const { data, error } = await client
     .from('posts')
     .insert({
@@ -46,13 +41,19 @@ export const createPost = async (
 
 export const createReply = async (
   client: SupabaseClient<Database>,
-  { postId, reply, userId }: { postId: number; reply: string; userId: string },
+  {
+    postId,
+    reply,
+    userId,
+    topLevelId,
+  }: { postId: number; reply: string; userId: string; topLevelId?: number },
 ) => {
   const { error } = await client.from('post_replies').insert({
-    post_id: postId,
+    ...(topLevelId ? { parent_id: topLevelId } : { post_id: postId }),
     reply,
     profile_id: userId,
   });
-
-  if (error) throw error;
+  if (error) {
+    throw error;
+  }
 };

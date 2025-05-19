@@ -31,6 +31,7 @@ export const meta: Route.MetaFunction = ({ params }) => {
 
 const formSchema = z.object({
   reply: z.string().min(1),
+  topLevelId: z.coerce.number().optional(),
 });
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
@@ -56,11 +57,12 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
       formErrors: error.flatten().fieldErrors,
     };
   }
-  const { reply } = data;
+  const { reply, topLevelId } = data;
   await createReply(client as any, {
     postId: Number(params.postId),
     reply,
     userId,
+    topLevelId,
   });
   return {
     ok: true,
@@ -153,12 +155,7 @@ export default function PostPage({
                     <Button>Reply</Button>
                   </div>
                 </Form>
-              ) : (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>Login to reply</span>
-                  <Link to="/login">Login</Link>
-                </div>
-              )}
+              ) : null}
               <div className="space-y-10">
                 <h4 className="font-semibold">
                   {loaderData.post.replies} Replies
@@ -166,11 +163,13 @@ export default function PostPage({
                 <div className="flex flex-col gap-5">
                   {loaderData.replies.map((reply) => (
                     <Reply
-                      username={reply.user.name}
+                      name={reply.user.name}
+                      username={reply.user.username}
                       avatarUrl={reply.user.avatar}
                       content={reply.reply}
                       timestamp={reply.created_at}
                       topLevel={true}
+                      topLevelId={reply.post_reply_id}
                       replies={reply.post_replies}
                     />
                   ))}

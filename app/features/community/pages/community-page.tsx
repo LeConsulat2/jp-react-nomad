@@ -19,7 +19,7 @@ import { PostCard } from '~/features/community/components/post-card';
 import { makeSSRClient } from '~/supa-client';
 
 export const meta: Route.MetaFunction = () => {
-  return [{ title: 'Community | wemake' }];
+  return [{ title: 'Community | We-Create' }];
 };
 
 const searchParamsSchema = z.object({
@@ -50,8 +50,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
 
   const [topics, posts] = await Promise.all([
-    getTopics(client),
-    getPosts(client, {
+    getTopics(client as any),
+    getPosts(client as any, {
       limit: 20,
       sorting: parsedData.sorting,
       period: parsedData.period,

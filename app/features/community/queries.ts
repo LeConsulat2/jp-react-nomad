@@ -68,7 +68,7 @@ export const getPostById = async (
   const { data, error } = await client
     .from('community_post_detail')
     .select('*')
-    .eq('post_id', postId)
+    .eq('post_id', Number(postId))
     .single();
   if (error) throw error;
   return data;
