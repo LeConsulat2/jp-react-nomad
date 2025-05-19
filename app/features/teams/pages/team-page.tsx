@@ -18,6 +18,7 @@ import { Hero } from '~/common/components/Hero';
 import InputPair from '~/common/components/ui/input-pair';
 import { z } from 'zod';
 import { getTeamById } from '../queries';
+import { makeSSRClient } from '~/supa-client';
 
 export const meta: Route.MetaFunction = () => [
   { title: 'Team Details | wemake' },
@@ -27,13 +28,39 @@ const paramsSchema = z.object({
   teamId: z.coerce.number(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
-  const { teamId } = paramsSchema.parse(params);
-  const team = await getTeamById(teamId);
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const { success, data, error } = paramsSchema.safeParse(params);
+  if (!success) {
+    throw new Error('Invalid team ID');
+  }
+  const team = await getTeamById(client as any, data.teamId);
   return { team };
 };
 
 export default function TeamPage({ loaderData }: Route.ComponentProps) {
+  if (!loaderData || !loaderData.team) {
+    return (
+      <div className="space-y-20">
+        <Hero
+          title="Team Not Found"
+          subtitle="The team you are looking for does not exist."
+        />
+      </div>
+    );
+  }
+
+  if (!loaderData.team.team_leader) {
+    return (
+      <div className="space-y-20">
+        <Hero
+          title="Team Data Incomplete"
+          subtitle="Team leader information is missing."
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-20">
       <Hero title={`Join ${loaderData.team.team_leader.name}'s team`} />
