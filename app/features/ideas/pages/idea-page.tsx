@@ -1,12 +1,14 @@
 import { DotIcon, HeartIcon } from 'lucide-react';
 import { EyeIcon } from 'lucide-react';
-
+import { redirect } from 'react-router';
 import { Button } from '~/common/components/ui/button';
 import type { Route } from './+types/idea-page';
 import { getGptIdea } from '../queries';
 import { DateTime } from 'luxon';
 import { Hero } from '~/common/components/Hero';
 import { makeSSRClient } from '~/supa-client';
+import { getLoggedInUserId } from '~/features/users/queries';
+import { claimIdea } from '../mutations';
 
 export const meta = ({
   data: {
@@ -14,15 +16,29 @@ export const meta = ({
   },
 }: Route.MetaArgs) => {
   return [
-    { title: `Idea #${gpt_idea_id}: ${idea} | wemake` },
+    { title: `Idea #${gpt_idea_id}: ${idea} | We-Create` },
     { name: 'description', content: 'Find ideas for your next project' },
   ];
 };
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
-  const idea = await getGptIdea(client, params.ideaId);
+  const idea = await getGptIdea(client as any, { ideaId: params.ideaId });
+  if (idea.is_claimed) {
+    throw redirect(`/ideas`);
+  }
   return { idea };
+};
+
+export const action = async ({ request, params }: Route.ActionArgs) => {
+  const { client } = makeSSRClient(request);
+  await getLoggedInUserId(client as any);
+  const idea = await getGptIdea(client as any, params.ideaId);
+  if (idea.is_claimed) {
+    return { ok: false, error: 'Idea already claimed' };
+  }
+  await claimIdea(client as any, { ideaId: params.ideaId, userId });
+  return redirect(`/my/dashboard/ideas/`);
 };
 
 export default function IdeaPage({ loaderData }: Route.ComponentProps) {
@@ -47,7 +63,11 @@ export default function IdeaPage({ loaderData }: Route.ComponentProps) {
             <span>{loaderData.idea.likes}</span>
           </Button>
         </div>
-        <Button size="lg">Claim idea now &rarr;</Button>
+        {loaderData.idea.is_claimed ? null : (
+          <form className="w-full flex gap-2" method="POST">
+            <Button size="lg">Claim idea now </Button>
+          </form>
+        )}
       </div>
     </div>
   );

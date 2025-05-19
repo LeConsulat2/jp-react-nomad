@@ -13,7 +13,7 @@ export const meta: Route.MetaFunction = () => {
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
-  const ideas = await getGptIdeas(client, { limit: 15 });
+  const ideas = await getGptIdeas(client as any, { limit: 15 });
   return { ideas };
 };
 
