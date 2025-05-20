@@ -26,3 +26,22 @@ export const updateUser = async (
     throw error;
   }
 };
+
+export const updateUserAvatar = async (
+  client: pkg.SupabaseClient<Database>,
+  {
+    id,
+    avatarUrl,
+  }: {
+    id: string;
+    avatarUrl: string;
+  },
+) => {
+  const { data, error } = await client
+    .from('profiles')
+    .update({ avatar: avatarUrl })
+    .eq('profile_id', id);
+  if (error) {
+    throw error;
+  }
+};

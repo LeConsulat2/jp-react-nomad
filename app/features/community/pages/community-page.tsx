@@ -47,7 +47,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     );
   }
 
-  const { client } = makeSSRClient(request);
+  const { client, headers } = makeSSRClient(request);
 
   const [topics, posts] = await Promise.all([
     getTopics(client as any),

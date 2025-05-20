@@ -59,13 +59,13 @@ export function Reply({
     }
   }, [actionData]);
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       <div className="flex items-start gap-5 w-2/3">
         <Avatar className="size-14">
           <AvatarFallback>{name[0]}</AvatarFallback>
           {avatarUrl ? <AvatarImage src={avatarUrl} /> : null}
         </Avatar>
-        <div className="flex flex-col gap-2 items-start">
+        <div className="flex flex-col gap-2 items-start w-full">
           <div className="flex gap-2 items-center">
             <Link to={`/users/${username}`}>
               <h4 className="font-medium">{name}</h4>
@@ -100,7 +100,7 @@ export function Reply({
               name="reply"
               placeholder="Write a reply"
               className="w-full resize-none"
-              defaultValue={`@${username}`}
+              defaultValue={` @${username}`}
               rows={5}
             />
             <Button>Reply</Button>
