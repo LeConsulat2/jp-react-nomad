@@ -61,7 +61,10 @@ export default function MessagesLayout({ loaderData }: Route.ComponentProps) {
             <SidebarMenu>
               {loaderData.products.map((product) => (
                 <SidebarMenuItem key={product.product_id}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={`my/dashboard/products/${product.product_id}`}
+                  >
                     <Link to={`/my/dashboard/products/${product.product_id}`}>
                       <RocketIcon className="size-4" />
                       <span>{product.name}</span>
