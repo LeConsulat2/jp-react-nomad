@@ -1,6 +1,6 @@
 import { StarIcon } from 'lucide-react';
 import { useState } from 'react';
-import { Form } from 'react-router';
+import { Form, useActionData } from 'react-router';
 import { Button } from '~/common/components/ui/button';
 import {
   DialogHeader,
@@ -11,63 +11,82 @@ import {
 } from '~/common/components/ui/dialog';
 import InputPair from '~/common/components/ui/input-pair';
 import { Label } from '~/common/components/ui/label';
+import { action } from '../pages/product-reviews-page';
 
-export default function CreateReviewDialogue() {
+export default function CreateReviewDialog() {
   const [rating, setRating] = useState<number>(0);
-  const [review, setReview] = useState<number>(0);
+  const [hoveredStar, setHoveredStar] = useState<number>(0);
+  const actionData = useActionData<typeof action>();
 
   return (
     <DialogContent>
-      <DialogHeader>
-        <DialogTitle> What do you think about this portfolio?</DialogTitle>
-        <DialogDescription>
-          Share your thoughts and experiences!
-        </DialogDescription>
-      </DialogHeader>
-      <Form className="space-y-10">
-        Rating
-        <div>
-          <Label>
-            What would you rate?
-            <small className="text-muted-foreground"></small>
-          </Label>
-          <div className="flex gap-8">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <label
-                key={star}
-                className="relative"
-                onMouseEnter={() => setReview(star)}
-                onMouseLeave={() => setReview(0)}
-              >
-                <StarIcon
-                  className="size-4 text-yellow"
-                  fill={
-                    (review && review >= star) || rating >= star
-                      ? 'currentColor'
-                      : 'none'
-                  }
-                />
-                <input
-                  type="radio"
-                  name="rating"
-                  value={star}
-                  required
-                  className="opacity-0 h-px w-px absolute"
-                  onChange={() => setRating(star)}
-                />
-              </label>
-            ))}
+      <Form method="post">
+        <DialogHeader>
+          <DialogTitle className="text-2xl">
+            What do you think of this product?
+          </DialogTitle>
+          <DialogDescription>
+            Share your thoughts and experiences with this product.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-6">
+          <div>
+            <Label className="flex flex-col gap-1">
+              Rating
+              <small className="text-muted-foreground">
+                What would you rate this product?
+              </small>
+            </Label>
+            <div className="flex gap-2 mt-5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <label
+                  key={star}
+                  className="relative cursor-pointer"
+                  onMouseEnter={() => setHoveredStar(star)}
+                  onMouseLeave={() => setHoveredStar(0)}
+                >
+                  <StarIcon
+                    className="size-5 text-yellow-400"
+                    fill={
+                      hoveredStar >= star || rating >= star
+                        ? 'currentColor'
+                        : 'none'
+                    }
+                  />
+                  <input
+                    type="radio"
+                    value={star}
+                    name="rating"
+                    required
+                    className="opacity-0 h-px w-px absolute"
+                    onChange={() => setRating(star)}
+                  />
+                </label>
+              ))}
+            </div>
+            {actionData?.formErrors?.rating && (
+              <p className="text-red-500">
+                {actionData.formErrors.rating.join(', ')}
+              </p>
+            )}
           </div>
+          <InputPair
+            textArea
+            required
+            name="review"
+            label="Review"
+            description="Maximum 1000 characters"
+            placeholder="Tell us more about your experience with this product"
+          />
+          {actionData?.formErrors?.review && (
+            <p className="text-red-500">
+              {actionData.formErrors.review.join(', ')}
+            </p>
+          )}
+          <DialogFooter>
+            <Button type="submit">Submit review</Button>
+          </DialogFooter>
         </div>
-        <InputPair
-          textArea
-          label="Share your thought and also add your portfolio also!"
-          description="Max 1000 characters"
-          placeholder="Share your thought and also add your portfolio also!"
-        />
-        <DialogFooter>
-          <Button type="submit">Submit your thoughts!</Button>
-        </DialogFooter>
       </Form>
     </DialogContent>
   );

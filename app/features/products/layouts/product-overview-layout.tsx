@@ -5,11 +5,14 @@ import { Button, buttonVariants } from '~/common/components/ui/button';
 import { cn } from '~/lib/utils';
 import type { Route } from './+types/product-overview-layout';
 import { getProductById } from '../queries';
+import { makeSSRClient } from '~/supa-client';
 
 export const loader = async ({
   params,
+  request,
 }: Route.LoaderArgs & { params: { productId: number } }) => {
-  const product = await getProductById(params.productId);
+  const { client } = makeSSRClient(request);
+  const product = await getProductById(client as any, params.productId);
   return { product };
 };
 
@@ -63,13 +66,13 @@ export default function ProductOverviewLayout({
           </Button>
         </div>
       </div>
-      <div className="flex gap-2.5">
+      <div className="flex gap-5">
         <NavLink
           end
           className={({ isActive }) =>
             cn(
               buttonVariants({ variant: 'outline' }),
-              isActive && 'bg-accent text-foreground ',
+              isActive && 'bg-accent text-foreground',
             )
           }
           to={`/products/${loaderData.product.product_id}/overview`}
@@ -80,7 +83,7 @@ export default function ProductOverviewLayout({
           className={({ isActive }) =>
             cn(
               buttonVariants({ variant: 'outline' }),
-              isActive && 'bg-accent text-foreground ',
+              isActive && 'bg-accent text-foreground',
             )
           }
           to={`/products/${loaderData.product.product_id}/reviews`}

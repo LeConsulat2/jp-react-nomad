@@ -15,7 +15,7 @@ reviews:stats->>reviews
 `;
 
 export const getProductsByDateRange = async (
-  client: SupabaseClient<Database>,
+  client: pkg.SupabaseClient<Database>,
   {
     startDate,
     endDate,
@@ -40,7 +40,7 @@ export const getProductsByDateRange = async (
 };
 
 export const getProductPagesByDateRange = async (
-  client: SupabaseClient<Database>,
+  client: pkg.SupabaseClient<Database>,
   {
     startDate,
     endDate,
@@ -68,7 +68,7 @@ export const getCategories = async (client: SupabaseClient<Database>) => {
 };
 
 export const getCategory = async (
-  client: SupabaseClient<Database>,
+  client: pkg.SupabaseClient<Database>,
   categoryId: number,
 ) => {
   const { data, error } = await client
@@ -81,7 +81,7 @@ export const getCategory = async (
 };
 
 export const getProductsByCategory = async (
-  client: SupabaseClient<Database>,
+  client: pkg.SupabaseClient<Database>,
   {
     categoryId,
     page,
@@ -113,7 +113,7 @@ export const getCategoryPages = async (
 };
 
 export const getProductsBySearch = async (
-  client: SupabaseClient<Database>,
+  client: pkg.SupabaseClient<Database>,
   {
     query,
     page,
@@ -132,7 +132,7 @@ export const getProductsBySearch = async (
 };
 
 export const getPagesBySearch = async (
-  client: SupabaseClient<Database>,
+  client: pkg.SupabaseClient<Database>,
   { query }: { query: string },
 ) => {
   const { count, error } = await client
@@ -145,7 +145,7 @@ export const getPagesBySearch = async (
 };
 
 export const getProductById = async (
-  client: SupabaseClient<Database>,
+  client: pkg.SupabaseClient<Database>,
   productId: number,
 ) => {
   const { data, error } = await client
@@ -157,7 +157,7 @@ export const getProductById = async (
   return data;
 };
 export const getReviews = async (
-  client: SupabaseClient<Database>,
+  client: pkg.SupabaseClient<Database>,
   productId: number,
 ) => {
   const { data, error } = await client
@@ -173,7 +173,8 @@ export const getReviews = async (
         )
       `,
     )
-    .eq('product_id', productId);
+    .eq('product_id', productId)
+    .order('created_at', { ascending: false });
   if (error) throw error;
   return data;
 };
