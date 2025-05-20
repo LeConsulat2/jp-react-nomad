@@ -9,10 +9,36 @@ import {
 } from '~/common/components/ui/card';
 import type { Route } from './+types/dashboard-product-page';
 import { ChartContainer } from '~/common/components/ui/chart';
+import { makeSSRClient } from '~/supa-client';
+import { getLoggedInUserId } from '../queries';
+import { data, redirect } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
   return [{ title: 'Product Dashboard | We-Create' }];
 };
+
+// export const loader = async ({ request, params }: Route.LoaderArgs) => {
+//   const { client } = await makeSSRClient(request);
+//   const userId = await getLoggedInUserId(client as any);
+//   const { error } = await client
+//     .from('products')
+//     .select('product_id')
+//     .eq('profile_id', userId)
+//     .eq('product_id', params.productId)
+//     .single();
+//   if (error) {
+//     throw redirect('/my/dashboard/products');
+//   }
+//   const { data, error: rpcError } = await client.rpc('get_product_stats', {
+//     product_id: params.productId,
+//   });
+//   if (rpcError) {
+//     throw error;
+//   }
+//   return {
+//     chartData: data,
+//   };
+// };
 
 const chartData = [
   { month: 'January', views: 186, visitors: 237 },

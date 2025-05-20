@@ -1,13 +1,6 @@
 import { Button } from '~/common/components/ui/button';
 import { ReviewCard } from '../components/review-card';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '~/common/components/ui/dialog';
+import { Dialog, DialogTrigger } from '~/common/components/ui/dialog';
 
 import { useOutletContext } from 'react-router';
 import type { Route } from './+types/product-reviews-page';

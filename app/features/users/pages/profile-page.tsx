@@ -14,6 +14,8 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
       username: params.username,
     },
   });
+
+  return { success: true };
 };
 
 export default function ProfilePage() {

@@ -11,8 +11,22 @@ import {
 } from '~/common/components/ui/sidebar';
 import { MessageCard } from '../components/message-card';
 import { HomeIcon, PackageIcon, RocketIcon, SparklesIcon } from 'lucide-react';
+import { makeSSRClient } from '~/supa-client';
+import { getLoggedInUserId, getProductsByUserId } from '../queries';
+import type { Route } from './+types/dashboard-layout';
 
-export default function MessagesLayout() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = await makeSSRClient(request);
+  const userId = await getLoggedInUserId(client as any);
+  const products = await getProductsByUserId(client as any, { userId });
+
+  return {
+    userId,
+    products,
+  };
+};
+
+export default function MessagesLayout({ loaderData }: Route.ComponentProps) {
   const location = useLocation();
   return (
     <SidebarProvider className="flex  min-h-full">
@@ -45,14 +59,16 @@ export default function MessagesLayout() {
           <SidebarGroup>
             <SidebarGroupLabel>Products Analytics</SidebarGroupLabel>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/my/dashboard/products/1">
-                    <RocketIcon className="size-4" />
-                    <span>Products 1</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {loaderData.products.map((product) => (
+                <SidebarMenuItem key={product.product_id}>
+                  <SidebarMenuButton asChild>
+                    <Link to={`/my/dashboard/products/${product.product_id}`}>
+                      <RocketIcon className="size-4" />
+                      <span>{product.name}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
