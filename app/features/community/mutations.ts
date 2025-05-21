@@ -60,7 +60,7 @@ export const createReply = async (
 };
 
 export const toggleUpvote = async (
-  client: SupabaseClient<Database>,
+  client: pkg.SupabaseClient<Database>,
   { postId, userId }: { postId: number; userId: string },
 ) => {
   const { count } = await client

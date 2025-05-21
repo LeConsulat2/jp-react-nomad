@@ -1,0 +1,2 @@
+-- No operation, this migration is just to handle schema sync
+-- All necessary changes are already handled in the previous migrations
