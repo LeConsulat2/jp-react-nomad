@@ -3,19 +3,18 @@ import type { Route } from './+types/products-page';
 import { getProductsByDateRange } from '../queries';
 import { DateTime } from 'luxon';
 
-import type { MetaFunction } from '@react-router/types';
 import { ProductCard } from '../components/product-card';
 
-export function meta(): MetaFunction {
+export const meta: Route.MetaFunction = () => {
   return [
-    { title: 'Products | ProductHunt Clone' },
+    { title: 'Products | We-Create' },
     { name: 'description', content: 'Browse all products' },
   ];
-}
+};
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
-  const products = await getProductsByDateRange(client, {
+  const products = await getProductsByDateRange(client as any, {
     startDate: DateTime.now().minus({ days: 30 }),
     endDate: DateTime.now(),
     limit: 20,

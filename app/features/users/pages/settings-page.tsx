@@ -37,7 +37,7 @@ const formSchema = z.object({
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const { client } = makeSSRClient(request);
-  const userId = await getLoggedInUserId(client);
+  const userId = await getLoggedInUserId(client as any);
   const formData = await request.formData();
   const avatar = formData.get('avatar');
   if (avatar && avatar instanceof File) {
@@ -55,7 +55,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
       const {
         data: { publicUrl },
       } = await client.storage.from('avatars').getPublicUrl(data.path);
-      await updateUserAvatar(client, {
+      await updateUserAvatar(client as any, {
         id: userId,
         avatarUrl: publicUrl,
       });
@@ -70,7 +70,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
       return { formErrors: error.flatten().fieldErrors };
     }
     const { name, role, headline, bio } = data;
-    await updateUser(client, {
+    await updateUser(client as any, {
       id: userId,
       name,
       role: role as

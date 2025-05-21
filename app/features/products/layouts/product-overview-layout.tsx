@@ -7,11 +7,18 @@ import type { Route } from './+types/product-overview-layout';
 import { getProductById } from '../queries';
 import { makeSSRClient } from '~/supa-client';
 
+export function meta({ data }: Route.MetaArgs) {
+  return [
+    { title: `${data.product.name} Overview | We-Create` },
+    { name: 'description', content: 'View product details and information' },
+  ];
+}
+
 export const loader = async ({
-  params,
   request,
-}: Route.LoaderArgs & { params: { productId: number } }) => {
-  const { client } = makeSSRClient(request);
+  params,
+}: Route.LoaderArgs & { params: { productId: string } }) => {
+  const { client, headers } = makeSSRClient(request);
   const product = await getProductById(client as any, params.productId);
   return { product };
 };
@@ -23,12 +30,16 @@ export default function ProductOverviewLayout({
     <div className="space-y-10">
       <div className="flex justify-between">
         <div className="flex gap-10">
-          <div className="size-40 rounded-xl shadow-xl bg-primary/50"></div>
+          <div className="size-40 rounded-xl overflow-hidden shadow-xl bg-primary/50">
+            <img
+              src={loaderData.product.icon}
+              alt={loaderData.product.name}
+              className="size-full object-cover"
+            />
+          </div>
           <div>
             <h1 className="text-5xl font-bold">{loaderData.product.name}</h1>
-            <p className=" text-2xl font-light">
-              {loaderData.product.description}
-            </p>
+            <p className=" text-2xl font-light">{loaderData.product.tagline}</p>
             <div className="mt-5 flex items-center gap-2">
               <div className="flex text-yellow-400">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -44,7 +55,7 @@ export default function ProductOverviewLayout({
                 ))}
               </div>
               <span className="text-muted-foreground ">
-                {loaderData.product.reviews}
+                {loaderData.product.reviews} reviews
               </span>
             </div>
           </div>
@@ -62,17 +73,17 @@ export default function ProductOverviewLayout({
           </Button>
           <Button size="lg" className="text-lg h-14 px-10">
             <ChevronUpIcon className="size-4" />
-            Upvote (100)
+            Upvote ({loaderData.product.upvotes})
           </Button>
         </div>
       </div>
-      <div className="flex gap-5">
+      <div className="flex gap-2.5">
         <NavLink
           end
           className={({ isActive }) =>
             cn(
               buttonVariants({ variant: 'outline' }),
-              isActive && 'bg-accent text-foreground',
+              isActive && 'bg-accent text-foreground ',
             )
           }
           to={`/products/${loaderData.product.product_id}/overview`}
@@ -83,7 +94,7 @@ export default function ProductOverviewLayout({
           className={({ isActive }) =>
             cn(
               buttonVariants({ variant: 'outline' }),
-              isActive && 'bg-accent text-foreground',
+              isActive && 'bg-accent text-foreground ',
             )
           }
           to={`/products/${loaderData.product.product_id}/reviews`}

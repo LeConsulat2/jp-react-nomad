@@ -80,10 +80,11 @@ export const reviews = pgTable(
         onDelete: 'cascade',
       })
       .notNull(),
-    profile_id: uuid()
-      .references(() => profiles.profile_id, {
-        onDelete: 'cascade',
-      })
+    profile_id: uuid().references(() => profiles.profile_id, {
+      onDelete: 'cascade',
+    }),
+    category_id: bigint({ mode: 'number' })
+      .references(() => categories.category_id, { onDelete: 'set null' })
       .notNull(),
     rating: integer().notNull(),
     review: text().notNull(),

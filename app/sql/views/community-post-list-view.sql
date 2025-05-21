@@ -1,3 +1,5 @@
+-- DROP VIEW IF EXISTS community_post_list_view;
+
 CREATE OR REPLACE VIEW community_post_list_view AS
 SELECT
   posts.post_id,
@@ -13,3 +15,11 @@ SELECT
 FROM posts
 INNER JOIN topics USING (topic_id)
 INNER JOIN profiles USING (profile_id);
+-- LEFT JOIN post_upvotes USING (post_id)
+-- GROUP BY posts.post_id, topics.name, profiles.name, profiles.avatar, profiles.username;
+
+select * from community_post_list_view;
+
+
+  
+select auth.uid();
