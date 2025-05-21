@@ -1,3 +1,9 @@
-export const SORT_OPTIONS = ['Newest', 'Most Popular'];
+export const SORT_OPTIONS = ['Newest', 'Most Popular'] as const;
 
-export const PERIOD_OPTIONS = ['All ', 'Today', ' Week', ' Month', 'Year'];
+export const PERIOD_OPTIONS = [
+  'All ',
+  'Today',
+  ' Week',
+  ' Month',
+  'Year',
+] as const;

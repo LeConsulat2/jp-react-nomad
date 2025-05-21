@@ -26,11 +26,14 @@ export const products = pgTable(
     icon: text().notNull(),
     url: text().notNull(),
     stats: jsonb().notNull().default({ views: 0, reviews: 0, upvotes: 0 }),
-    profile_id: uuid().notNull(),
-    category_id: bigint({ mode: 'number' }).references(
-      () => categories.category_id,
-      { onDelete: 'set null' },
-    ),
+    profile_id: uuid()
+      .notNull()
+      .references(() => profiles.profile_id, {
+        onDelete: 'cascade',
+      }),
+    category_id: bigint({ mode: 'number' })
+      .references(() => categories.category_id, { onDelete: 'set null' })
+      .notNull(),
     created_at: timestamp().notNull().defaultNow(),
     updated_at: timestamp().notNull().defaultNow(),
   },
@@ -80,11 +83,10 @@ export const reviews = pgTable(
         onDelete: 'cascade',
       })
       .notNull(),
-    profile_id: uuid().references(() => profiles.profile_id, {
-      onDelete: 'cascade',
-    }),
-    category_id: bigint({ mode: 'number' })
-      .references(() => categories.category_id, { onDelete: 'set null' })
+    profile_id: uuid()
+      .references(() => profiles.profile_id, {
+        onDelete: 'cascade',
+      })
       .notNull(),
     rating: integer().notNull(),
     review: text().notNull(),

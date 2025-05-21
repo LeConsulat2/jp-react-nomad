@@ -6,8 +6,8 @@ import {
   BreadcrumbSeparator,
 } from '~/common/components/ui/breadcrumb';
 import type { Route } from './+types/post-page';
-import { Form, Link, redirect, useOutletContext } from 'react-router';
-import { ChevronUpIcon, DotIcon, MessageCircleIcon } from 'lucide-react';
+import { Form, Link, useFetcher, useOutletContext } from 'react-router';
+import { ChevronUpIcon, DotIcon } from 'lucide-react';
 import { Button } from '~/common/components/ui/button';
 import { Textarea } from '~/common/components/ui/textarea';
 import {
@@ -17,33 +17,32 @@ import {
 } from '~/common/components/ui/avatar';
 import { Badge } from '~/common/components/ui/badge';
 import { Reply } from '~/features/community/components/reply';
+import { getPostById, getReplies } from '../queries';
+import { createReply } from '../mutations';
 import { DateTime } from 'luxon';
 import { makeSSRClient } from '~/supa-client';
-import { getReplies, getPostById } from '../queries';
 import { getLoggedInUserId } from '~/features/users/queries';
 import { z } from 'zod';
-import { createReply } from '../mutations';
 import { useEffect, useRef } from 'react';
+import { cn } from '~/lib/utils';
 
-export const meta: Route.MetaFunction = ({ params }) => {
-  return [{ title: `${params.postId} | We-Create` }];
+export const meta: Route.MetaFunction = ({ data }) => {
+  return [
+    { title: `${data.post.title} on ${data.post.topic_name} | We-Create` },
+  ];
+};
+
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const { client, headers } = makeSSRClient(request);
+  const post = await getPostById(client as any, { postId: params.postId });
+  const replies = await getReplies(client as any, { postId: params.postId });
+  return { post, replies };
 };
 
 const formSchema = z.object({
   reply: z.string().min(1),
   topLevelId: z.coerce.number().optional(),
 });
-
-export const loader = async ({ request, params }: Route.LoaderArgs) => {
-  const { client, headers } = makeSSRClient(request);
-  const post = await getPostById(client as any, {
-    postId: Number(params.postId),
-  });
-  const replies = await getReplies(client as any, {
-    postId: Number(params.postId),
-  });
-  return { post, replies };
-};
 
 export const action = async ({ request, params }: Route.ActionArgs) => {
   const { client } = makeSSRClient(request);
@@ -73,6 +72,7 @@ export default function PostPage({
   loaderData,
   actionData,
 }: Route.ComponentProps) {
+  const fetcher = useFetcher();
   const { isLoggedIn, name, username, avatar } = useOutletContext<{
     isLoggedIn: boolean;
     name?: string;
@@ -113,10 +113,28 @@ export default function PostPage({
       <div className="grid grid-cols-6 gap-40 items-start">
         <div className="col-span-4 space-y-10">
           <div className="flex w-full items-start gap-10">
-            <Button variant="outline" className="flex flex-col h-14">
-              <ChevronUpIcon className="size-4 shrink-0" />
-              <span>{loaderData.post.upvotes}</span>
-            </Button>
+            <fetcher.Form
+              method="post"
+              action={`/community/${loaderData.post.post_id}/upvote`}
+            >
+              <input
+                type="hidden"
+                name="postId"
+                value={loaderData.post.post_id}
+              />
+              <Button
+                variant="outline"
+                className={cn(
+                  'flex flex-col h-14',
+                  loaderData.post.is_upvoted
+                    ? 'border-primary text-primary'
+                    : '',
+                )}
+              >
+                <ChevronUpIcon className="size-4 shrink-0" />
+                <span>{loaderData.post.upvotes}</span>
+              </Button>
+            </fetcher.Form>
             <div className="space-y-20 w-full">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold">{loaderData.post.title}</h2>
@@ -126,7 +144,7 @@ export default function PostPage({
                   <span>
                     {DateTime.fromISO(loaderData.post.created_at, {
                       zone: 'utc',
-                    }).toRelative({ unit: 'hours' })}
+                    }).toRelative()}
                   </span>
                   <DotIcon className="size-5" />
                   <span>{loaderData.post.replies} replies</span>
@@ -200,7 +218,7 @@ export default function PostPage({
               🎂 Joined{' '}
               {DateTime.fromISO(loaderData.post.author_created_at, {
                 zone: 'utc',
-              }).toRelative({ unit: 'hours' })}{' '}
+              }).toRelative()}{' '}
               ago
             </span>
             <span>🚀 Launched {loaderData.post.products} products</span>

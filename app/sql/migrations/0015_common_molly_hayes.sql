@@ -1,0 +1,11 @@
+-- ALTER TYPE "public"."job_types" ADD VALUE 'freelance';--> statement-breakpoint
+-- ALTER TABLE "post_replies" DROP CONSTRAINT "post_replies_post_id_post_replies_post_reply_id_fk";
+-- --> statement-breakpoint
+-- ALTER TABLE "posts" ALTER COLUMN "topic_id" SET NOT NULL;--> statement-breakpoint
+-- ALTER TABLE "posts" ALTER COLUMN "profile_id" SET NOT NULL;--> statement-breakpoint
+-- ALTER TABLE "reviews" ALTER COLUMN "product_id" SET NOT NULL;--> statement-breakpoint
+-- ALTER TABLE "post_replies" ADD COLUMN "parent_id" bigint;--> statement-breakpoint
+-- ALTER TABLE "reviews" ADD COLUMN "category_id" bigint NOT NULL;--> statement-breakpoint
+-- ALTER TABLE "post_replies" ADD CONSTRAINT "post_replies_post_id_posts_post_id_fk" FOREIGN KEY ("post_id") REFERENCES "public"."posts"("post_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+-- ALTER TABLE "post_replies" ADD CONSTRAINT "post_replies_parent_id_post_replies_post_reply_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."post_replies"("post_reply_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+-- ALTER TABLE "reviews" ADD CONSTRAINT "reviews_category_id_categories_category_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("category_id") ON DELETE set null ON UPDATE no action;
