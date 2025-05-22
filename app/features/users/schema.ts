@@ -86,6 +86,7 @@ export const notifications = pgTable('notifications', {
     })
     .notNull(),
   type: notificationType().notNull(),
+  seen: boolean().notNull().default(false),
   created_at: timestamp().notNull().defaultNow(),
 });
 

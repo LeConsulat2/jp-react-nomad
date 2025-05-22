@@ -57,18 +57,18 @@ export type Database = {
       follows: {
         Row: {
           created_at: string
-          follower_id: string | null
-          following_id: string | null
+          follower_id: string
+          following_id: string
         }
         Insert: {
           created_at?: string
-          follower_id?: string | null
-          following_id?: string | null
+          follower_id: string
+          following_id: string
         }
         Update: {
           created_at?: string
-          follower_id?: string | null
-          following_id?: string | null
+          follower_id?: string
+          following_id?: string
         }
         Relationships: [
           {
@@ -234,13 +234,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "message_room_members_message_room_id_message_rooms_message_room"
-            columns: ["message_room_id"]
-            isOneToOne: false
-            referencedRelation: "message_rooms"
-            referencedColumns: ["message_room_id"]
-          },
-          {
             foreignKeyName: "message_room_members_profile_id_profiles_profile_id_fk"
             columns: ["profile_id"]
             isOneToOne: false
@@ -313,7 +306,7 @@ export type Database = {
           post_id: number | null
           product_id: number | null
           source_id: string | null
-          target_id: string
+          target_id: string | null
           type: Database["public"]["Enums"]["notification_type"]
         }
         Insert: {
@@ -322,7 +315,7 @@ export type Database = {
           post_id?: number | null
           product_id?: number | null
           source_id?: string | null
-          target_id: string
+          target_id?: string | null
           type: Database["public"]["Enums"]["notification_type"]
         }
         Update: {
@@ -331,7 +324,7 @@ export type Database = {
           post_id?: number | null
           product_id?: number | null
           source_id?: string | null
-          target_id?: string
+          target_id?: string | null
           type?: Database["public"]["Enums"]["notification_type"]
         }
         Relationships: [
@@ -389,6 +382,7 @@ export type Database = {
       post_replies: {
         Row: {
           created_at: string
+          parent_id: number | null
           post_id: number | null
           post_reply_id: number
           profile_id: string
@@ -397,6 +391,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          parent_id?: number | null
           post_id?: number | null
           post_reply_id?: never
           profile_id: string
@@ -405,6 +400,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          parent_id?: number | null
           post_id?: number | null
           post_reply_id?: never
           profile_id?: string
@@ -413,11 +409,32 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "post_replies_post_id_post_replies_post_reply_id_fk"
-            columns: ["post_id"]
+            foreignKeyName: "post_replies_parent_id_post_replies_post_reply_id_fk"
+            columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "post_replies"
             referencedColumns: ["post_reply_id"]
+          },
+          {
+            foreignKeyName: "post_replies_post_id_posts_post_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_post_detail"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_replies_post_id_posts_post_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_post_list_view"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_replies_post_id_posts_post_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["post_id"]
           },
           {
             foreignKeyName: "post_replies_profile_id_profiles_profile_id_fk"
@@ -477,9 +494,9 @@ export type Database = {
           content: string
           created_at: string
           post_id: number
-          profile_id: string | null
+          profile_id: string
           title: string
-          topic_id: number | null
+          topic_id: number
           updated_at: string
           upvotes: number | null
         }
@@ -487,9 +504,9 @@ export type Database = {
           content: string
           created_at?: string
           post_id?: never
-          profile_id?: string | null
+          profile_id: string
           title: string
-          topic_id?: number | null
+          topic_id: number
           updated_at?: string
           upvotes?: number | null
         }
@@ -497,9 +514,9 @@ export type Database = {
           content?: string
           created_at?: string
           post_id?: never
-          profile_id?: string | null
+          profile_id?: string
           title?: string
-          topic_id?: number | null
+          topic_id?: number
           updated_at?: string
           upvotes?: number | null
         }
@@ -566,7 +583,7 @@ export type Database = {
       }
       products: {
         Row: {
-          category_id: number | null
+          category_id: number
           created_at: string
           description: string
           how_it_works: string
@@ -580,7 +597,7 @@ export type Database = {
           url: string
         }
         Insert: {
-          category_id?: number | null
+          category_id: number
           created_at?: string
           description: string
           how_it_works: string
@@ -594,7 +611,7 @@ export type Database = {
           url: string
         }
         Update: {
-          category_id?: number | null
+          category_id?: number
           created_at?: string
           description?: string
           how_it_works?: string
@@ -676,8 +693,8 @@ export type Database = {
       reviews: {
         Row: {
           created_at: string
-          product_id: number | null
-          profile_id: string | null
+          product_id: number
+          profile_id: string
           rating: number
           review: string
           review_id: number
@@ -685,8 +702,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          product_id?: number | null
-          profile_id?: string | null
+          product_id: number
+          profile_id: string
           rating: number
           review: string
           review_id?: never
@@ -694,8 +711,8 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          product_id?: number | null
-          profile_id?: string | null
+          product_id?: number
+          profile_id?: string
           rating?: number
           review?: string
           review_id?: never
@@ -734,7 +751,7 @@ export type Database = {
           product_stage: Database["public"]["Enums"]["product_stage"]
           roles: string
           team_id: number
-          team_leader_id: string | null
+          team_leader_id: string
           team_size: number
           updated_at: string
         }
@@ -746,7 +763,7 @@ export type Database = {
           product_stage: Database["public"]["Enums"]["product_stage"]
           roles: string
           team_id?: never
-          team_leader_id?: string | null
+          team_leader_id: string
           team_size: number
           updated_at?: string
         }
@@ -758,13 +775,13 @@ export type Database = {
           product_stage?: Database["public"]["Enums"]["product_stage"]
           roles?: string
           team_id?: never
-          team_leader_id?: string | null
+          team_leader_id?: string
           team_size?: number
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "teams_team_leader_id_fkey"
+            foreignKeyName: "team_team_leader_id_fkey"
             columns: ["team_leader_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -803,7 +820,7 @@ export type Database = {
           author_role: Database["public"]["Enums"]["role"] | null
           content: string | null
           created_at: string | null
-          is_upvoted: boolean | null
+          is_upvote: boolean | null
           post_id: number | null
           products: number | null
           replies: number | null
@@ -884,7 +901,7 @@ export type Database = {
     }
     Enums: {
       event_type: "product_view" | "product_visit" | "profile_view"
-      job_types: "full-time" | "part-time" | "contract"
+      job_types: "full-time" | "part-time" | "contract" | "freelance"
       location: "remote" | "on-site" | "hybrid"
       notification_type: "follow" | "review" | "reply" | "mention"
       product_stage: "idea" | "prototype" | "mvp" | "product"
@@ -1017,7 +1034,7 @@ export const Constants = {
   public: {
     Enums: {
       event_type: ["product_view", "product_visit", "profile_view"],
-      job_types: ["full-time", "part-time", "contract"],
+      job_types: ["full-time", "part-time", "contract", "freelance"],
       location: ["remote", "on-site", "hybrid"],
       notification_type: ["follow", "review", "reply", "mention"],
       product_stage: ["idea", "prototype", "mvp", "product"],

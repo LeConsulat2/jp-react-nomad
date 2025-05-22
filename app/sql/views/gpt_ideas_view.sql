@@ -9,3 +9,5 @@ SELECT
 FROM public.gpt_ideas
 LEFT JOIN public.gpt_ideas_likes USING (gpt_idea_id)
 GROUP BY gpt_ideas.gpt_idea_id;
+
+
