@@ -124,10 +124,12 @@ export const messages = pgTable('messages', {
     () => messageRooms.message_room_id,
     { onDelete: 'cascade' },
   ),
-  sender_id: uuid().references(() => profiles.profile_id, {
-    onDelete: 'cascade',
-  }),
-  content: text(),
+  sender_id: uuid()
+    .references(() => profiles.profile_id, {
+      onDelete: 'cascade',
+    })
+    .notNull(),
+  content: text().notNull(),
   seen: boolean().notNull().default(false),
   created_at: timestamp().notNull().defaultNow(),
 });

@@ -305,6 +305,7 @@ export type Database = {
           notification_id: number
           post_id: number | null
           product_id: number | null
+          seen: boolean
           source_id: string | null
           target_id: string | null
           type: Database["public"]["Enums"]["notification_type"]
@@ -314,6 +315,7 @@ export type Database = {
           notification_id?: never
           post_id?: number | null
           product_id?: number | null
+          seen?: boolean
           source_id?: string | null
           target_id?: string | null
           type: Database["public"]["Enums"]["notification_type"]
@@ -323,6 +325,7 @@ export type Database = {
           notification_id?: never
           post_id?: number | null
           product_id?: number | null
+          seen?: boolean
           source_id?: string | null
           target_id?: string | null
           type?: Database["public"]["Enums"]["notification_type"]
@@ -889,6 +892,12 @@ export type Database = {
           product_views: number
           product_visits: number
           month: string
+        }[]
+      }
+      get_room: {
+        Args: { from_user_id: string; to_user_id: string }
+        Returns: {
+          message_room_id: number
         }[]
       }
       track_event: {
