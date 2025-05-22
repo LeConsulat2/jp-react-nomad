@@ -134,3 +134,18 @@ export const getNotifications = async (
   }
   return data;
 };
+
+export const countNotifications = async (
+  client: pkg.SupabaseClient<Database>,
+  { userId }: { userId: string },
+) => {
+  const { count, error } = await client
+    .from('notifications')
+    .select('*', { count: 'exact', head: true })
+    .eq('seen', false)
+    .eq('target_id', userId);
+  if (error) {
+    throw error;
+  }
+  return count ?? 0;
+};

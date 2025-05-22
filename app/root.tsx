@@ -14,7 +14,7 @@ import './app.css';
 import Navigation from './common/components/navigation';
 import { Settings } from 'luxon';
 import { makeSSRClient } from './supa-client';
-import { getUserById } from './features/users/queries';
+import { countNotifications, getUserById } from './features/users/queries';
 
 // ==================================================
 // 🌐 글로벌 링크 설정 (Google Fonts 연결)
@@ -60,11 +60,12 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   const {
     data: { user },
   } = await client.auth.getUser();
-  if (user) {
+  if (user && user.id) {
     const profile = await getUserById(client as any, { id: user.id });
-    return { user, profile };
+    const count = await countNotifications(client as any, { userId: user.id });
+    return { user, profile, notificationsCount: 0 };
   }
-  return { user: null, profile: null };
+  return { user: null, profile: null, notificationsCount: 0 };
 };
 
 // ==================================================
@@ -83,7 +84,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
           username={loaderData.profile?.username}
           avatar={loaderData.profile?.avatar}
           name={loaderData.profile?.name}
-          hasNotifications={false}
+          hasNotifications={loaderData.notificationsCount > 0}
           hasMessages={false}
         />
       )}
