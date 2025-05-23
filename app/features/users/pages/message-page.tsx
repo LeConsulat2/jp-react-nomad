@@ -15,12 +15,15 @@ import { Textarea } from '~/common/components/ui/textarea';
 import { Button } from '~/common/components/ui/button';
 import { SendIcon } from 'lucide-react';
 import { MessageBubble } from '../components/messages-bubble';
-import { makeSSRClient } from '~/supa-client';
+import { type Database, browserClient, makeSSRClient } from '~/supa-client';
 import {
   getLoggedInUserId,
   getMessagesByMessagesRoomId,
   getRoomsParticipant,
+  sendMessageToRoom,
 } from '../queries';
+import { z } from 'zod';
+import { useEffect, useRef, useState } from 'react';
 
 export const Meta: Route.MetaFunction = () => [
   { title: 'Message | We-Create' },
@@ -43,8 +46,65 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   };
 };
 
-export default function MessagePage({ loaderData }: Route.ComponentProps) {
-  const { userId } = useOutletContext<{ userId: string }>();
+const formSchema = z.object({
+  message: z.string().min(1),
+});
+
+export const action = async ({ request, params }: Route.ActionArgs) => {
+  const { client } = await makeSSRClient(request);
+  const userId = await getLoggedInUserId(client as any);
+  const formData = await request.formData();
+  const message = formData.get('message');
+  const result = formSchema.safeParse({ message });
+  if (!result.success) {
+    return { formError: result.error.flatten().fieldErrors.message };
+  }
+  await sendMessageToRoom(client as any, {
+    messageRoomId: params.messageRoomId,
+    userId,
+    message: result.data.message,
+  });
+  return { success: 'Message sent' };
+};
+
+export default function MessagePage({
+  loaderData,
+  actionData,
+}: Route.ComponentProps) {
+  const [messages, setMessages] = useState(loaderData.messages);
+  const { userId, name, avatar } = useOutletContext<{
+    userId: string;
+    name: string;
+    avatar: string;
+  }>();
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (actionData?.success) {
+      formRef.current?.reset();
+    }
+  }, [actionData]);
+  useEffect(() => {
+    const changes = browserClient
+      .channel(`room:${userId}-${loaderData.participants?.profile?.profile_id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+        },
+        (payload) => {
+          setMessages((prev) => [
+            ...prev,
+            payload.new as Database['public']['Tables']['messages']['Row'],
+          ]);
+        },
+      )
+      .subscribe();
+    return () => {
+      changes.unsubscribe();
+    };
+  }, []);
   return (
     <div className="h-full flex flex-col justify-between">
       <Card>
@@ -67,20 +127,34 @@ export default function MessagePage({ loaderData }: Route.ComponentProps) {
         {loaderData.messages.map((message) => (
           <MessageBubble
             key={message.message_id}
-            avatarUrl={message.sender?.avatar ?? ''}
-            avatarFallback={message.sender?.name?.charAt(0) ?? ''}
+            avatarUrl={
+              message.sender_id === userId
+                ? avatar
+                : loaderData.participants?.profile?.avatar ?? ''
+            }
+            avatarFallback={
+              message.sender_id === userId
+                ? name.charAt(0)
+                : loaderData.participants?.profile.name?.charAt(0) ?? ''
+            }
             content={message.content}
-            isCurrentUser={message.sender?.profile_id === userId}
+            isCurrentUser={message.sender_id === userId}
           />
         ))}
       </div>
 
       <Card>
         <CardHeader>
-          <Form className="relative flex justify-end items-center">
+          <Form
+            ref={formRef}
+            className="relative flex justify-end items-center"
+            method="post"
+          >
             <Textarea
               placeholder="Type your message here..."
               rows={3}
+              required
+              name="message"
               className="resize-y"
             />
             <Button type="submit" size="icon" className="absolute ">
