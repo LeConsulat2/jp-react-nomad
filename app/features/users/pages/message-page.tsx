@@ -29,6 +29,10 @@ export const Meta: Route.MetaFunction = () => [
   { title: 'Message | We-Create' },
 ];
 
+/**
+ * 메시지 페이지 로더 함수
+ * 특정 메시지룸의 메시지와 참여자 정보를 불러옴
+ */
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const { client } = await makeSSRClient(request);
   const userId = await getLoggedInUserId(client as any);
@@ -46,10 +50,18 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   };
 };
 
+/**
+ * 메시지 입력 폼 검증 스키마
+ * 최소 1자 이상의 메시지를 요구함
+ */
 const formSchema = z.object({
   message: z.string().min(1),
 });
 
+/**
+ * 메시지 전송 액션 함수
+ * 폼 데이터를 검증하고 메시지를 저장함
+ */
 export const action = async ({ request, params }: Route.ActionArgs) => {
   const { client } = await makeSSRClient(request);
   const userId = await getLoggedInUserId(client as any);
@@ -71,49 +83,25 @@ export default function MessagePage({
   loaderData,
   actionData,
 }: Route.ComponentProps) {
+  // ==================== 상태 관리 ====================
+  // 메시지 목록 상태 (실시간 업데이트를 위해 useState 사용)
   const [messages, setMessages] = useState(loaderData.messages);
+
+  // 현재 사용자 정보를 Outlet 컨텍스트에서 가져옴
   const { userId, name, avatar } = useOutletContext<{
     userId: string;
     name: string;
     avatar: string;
   }>();
+
+  // ==================== Refs 선언 ====================
+  // 폼, 메시지 컨테이너, 텍스트 영역에 대한 참조
   const formRef = useRef<HTMLFormElement>(null);
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // 폼 리셋 및 텍스트박스 포커스
-  useEffect(() => {
-    if (actionData?.success) {
-      formRef.current?.reset();
-      textareaRef.current?.focus();
-    }
-  }, [actionData]);
-
-  // 새 메시지 구독
-  useEffect(() => {
-    const changes = browserClient
-      .channel(`room:${userId}-${loaderData.participants?.profile?.profile_id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-        },
-        (payload) => {
-          setMessages((prev) => [
-            ...prev,
-            payload.new as Database['public']['Tables']['messages']['Row'],
-          ]);
-        },
-      )
-      .subscribe();
-    return () => {
-      changes.unsubscribe();
-    };
-  }, []);
-
-  // Enter 키로 메시지 전송
+  // ==================== 이벤트 핸들러 ====================
+  // Enter 키로 메시지 전송하는 핸들러
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // Enter + Shift가 아니면 메시지 전송
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -123,7 +111,44 @@ export default function MessagePage({
     }
   };
 
-  // 페이지 로드 시와 메시지 추가 시 스크롤 맨 아래로 이동
+  // ==================== 부수 효과 (Effects) ====================
+  // 폼 제출 성공 시 입력창 초기화 및 포커스 효과
+  useEffect(() => {
+    if (actionData?.success) {
+      formRef.current?.reset();
+      textareaRef.current?.focus();
+    }
+  }, [actionData]);
+
+  // 실시간 메시지 업데이트를 위한 Supabase 구독 설정
+  useEffect(() => {
+    // 메시지룸 채널을 구독 (사용자 ID와 대화 상대 ID를 조합하여 채널명 생성)
+    const changes = browserClient
+      .channel(`room:${userId}-${loaderData.participants?.profile?.profile_id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT', // 새 메시지 추가 이벤트만 구독
+          schema: 'public',
+          table: 'messages',
+        },
+        (payload) => {
+          // 새 메시지가 추가되면 메시지 목록 업데이트
+          setMessages((prev) => [
+            ...prev,
+            payload.new as Database['public']['Tables']['messages']['Row'],
+          ]);
+        },
+      )
+      .subscribe();
+
+    // 컴포넌트 언마운트 시 구독 해제
+    return () => {
+      changes.unsubscribe();
+    };
+  }, []);
+
+  // 자동 스크롤 효과: 메시지 추가 시 항상 맨 아래로 스크롤
   useEffect(() => {
     // 약간의 딜레이를 주어 DOM 업데이트 후 스크롤 실행
     const timer = setTimeout(() => {
@@ -133,11 +158,13 @@ export default function MessagePage({
       }
     }, 100);
 
+    // 타이머 정리 함수
     return () => clearTimeout(timer);
   }, [messages]);
 
   return (
     <div className="h-full flex flex-col justify-between">
+      {/* ==================== 상단 헤더 카드 ==================== */}
       <Card>
         <CardHeader className="flex flex-row items-center gap-4">
           <Avatar className="size-12">
@@ -154,6 +181,8 @@ export default function MessagePage({
           </div>
         </CardHeader>
       </Card>
+
+      {/* ==================== 메시지 표시 영역 ==================== */}
       <div
         ref={messageContainerRef}
         className="py-4 overflow-y-scroll space-y-4 flex flex-col justify-start h-full scrollbar-visible"
@@ -182,6 +211,7 @@ export default function MessagePage({
         ))}
       </div>
 
+      {/* ==================== 메시지 입력 폼 ==================== */}
       <Card>
         <CardHeader>
           <Form
