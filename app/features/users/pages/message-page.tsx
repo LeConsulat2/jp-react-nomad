@@ -78,11 +78,18 @@ export default function MessagePage({
     avatar: string;
   }>();
   const formRef = useRef<HTMLFormElement>(null);
+  const messageContainerRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // 폼 리셋 및 텍스트박스 포커스
   useEffect(() => {
     if (actionData?.success) {
       formRef.current?.reset();
+      textareaRef.current?.focus();
     }
   }, [actionData]);
+
+  // 새 메시지 구독
   useEffect(() => {
     const changes = browserClient
       .channel(`room:${userId}-${loaderData.participants?.profile?.profile_id}`)
@@ -105,6 +112,30 @@ export default function MessagePage({
       changes.unsubscribe();
     };
   }, []);
+
+  // Enter 키로 메시지 전송
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Enter + Shift가 아니면 메시지 전송
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      // submit() 메서드 사용
+      formRef.current?.submit();
+    }
+  };
+
+  // 페이지 로드 시와 메시지 추가 시 스크롤 맨 아래로 이동
+  useEffect(() => {
+    // 약간의 딜레이를 주어 DOM 업데이트 후 스크롤 실행
+    const timer = setTimeout(() => {
+      if (messageContainerRef.current) {
+        messageContainerRef.current.scrollTop =
+          messageContainerRef.current.scrollHeight;
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [messages]);
+
   return (
     <div className="h-full flex flex-col justify-between">
       <Card>
@@ -112,7 +143,7 @@ export default function MessagePage({
           <Avatar className="size-12">
             <AvatarImage src={loaderData.participants?.profile?.avatar ?? ''} />
             <AvatarFallback>
-              {loaderData.participants?.profile?.name.charAt(0) ?? ''}
+              {(loaderData.participants?.profile?.name || '').charAt(0)}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col gap-0">
@@ -123,8 +154,16 @@ export default function MessagePage({
           </div>
         </CardHeader>
       </Card>
-      <div className="py-4 overflow-y-scroll space-y-4 flex flex-col justify-start h-full">
-        {loaderData.messages.map((message) => (
+      <div
+        ref={messageContainerRef}
+        className="py-4 overflow-y-scroll space-y-4 flex flex-col justify-start h-full scrollbar-visible"
+        style={{
+          overflowY: 'scroll',
+          scrollbarWidth: 'thin',
+          msOverflowStyle: 'auto',
+        }}
+      >
+        {messages.map((message) => (
           <MessageBubble
             key={message.message_id}
             avatarUrl={
@@ -135,9 +174,9 @@ export default function MessagePage({
             avatarFallback={
               message.sender_id === userId
                 ? name.charAt(0)
-                : loaderData.participants?.profile.name?.charAt(0) ?? ''
+                : (loaderData.participants?.profile?.name || '').charAt(0)
             }
-            content={message.content}
+            content={message.content || ''}
             isCurrentUser={message.sender_id === userId}
           />
         ))}
@@ -149,13 +188,21 @@ export default function MessagePage({
             ref={formRef}
             className="relative flex justify-end items-center"
             method="post"
+            onSubmit={() => {
+              // 폼 제출 시 바로 텍스트 영역 초기화 (UX 개선)
+              setTimeout(() => {
+                textareaRef.current?.focus();
+              }, 0);
+            }}
           >
             <Textarea
+              ref={textareaRef}
               placeholder="Type your message here..."
               rows={3}
               required
               name="message"
               className="resize-y"
+              onKeyDown={handleKeyDown}
             />
             <Button type="submit" size="icon" className="absolute ">
               <SendIcon className="size-4" />
