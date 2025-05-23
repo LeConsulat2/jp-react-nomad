@@ -114,12 +114,19 @@ export default function MessagePage({
   }, []);
 
   // Enter 키로 메시지 전송
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Enter + Shift가 아니면 메시지 전송
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      // submit() 메서드 사용
-      formRef.current?.submit();
+  const [inputValue, setInputValue] = useState('');
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (
+    e,
+  ) => {
+    console.log('keydown:', e.key, 'shift?', e.shiftKey);
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      console.log('🚀 submitting form');
+      formRef.current?.requestSubmit();
     }
   };
 
@@ -203,6 +210,7 @@ export default function MessagePage({
               name="message"
               className="resize-y"
               onKeyDown={handleKeyDown}
+              onChange={handleInputChange}
             />
             <Button type="submit" size="icon" className="absolute ">
               <SendIcon className="size-4" />
@@ -213,3 +221,5 @@ export default function MessagePage({
     </div>
   );
 }
+
+export const shouldRevalidate = () => false;

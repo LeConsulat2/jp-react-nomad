@@ -31,7 +31,7 @@ export const loader = async ({
 }) => {
   const username = (params as { username: string }).username;
   const { client } = makeSSRClient(request);
-  const user = await getUserProfile(client as any, username);
+  const user = await getUserProfile(client as any, { username });
   return { user };
 };
 
