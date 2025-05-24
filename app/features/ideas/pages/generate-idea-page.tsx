@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { insertIdeas } from '../mutations';
 import { adminClient } from '~/supa-client';
+import type { Route } from './+types/generate-idea-page';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
@@ -28,7 +29,15 @@ const ResponseSchema = z.object({
   potentialIdeas: z.array(IdeaSchema),
 });
 
-export const loader = async () => {
+export const action = async ({ request }: Route.ActionArgs) => {
+  if (request.method !== 'POST') {
+    return new Response(null, { status: 404 });
+  }
+  const header = request.headers.get('JP-SECRETS');
+  if (!header || header !== 'JP_NOTTELL') {
+    return new Response(null, { status: 404 });
+  }
+
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o',
     messages: [
