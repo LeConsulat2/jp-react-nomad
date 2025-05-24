@@ -1,6 +1,6 @@
 {
-  "id": "f7398206-f66d-40a1-a3c0-28094a150256",
-  "prevId": "3faedce2-24da-471e-8d71-21d9b9f229b6",
+  "id": "bbf13a9e-a043-480b-bbf1-2694a4696a97",
+  "prevId": "f7398206-f66d-40a1-a3c0-28094a150256",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -767,6 +767,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "is_promoted": {
+          "name": "is_promoted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
         "tagline": {
           "name": "tagline",
           "type": "text",
@@ -1287,13 +1294,13 @@
           "name": "sender_id",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "content": {
           "name": "content",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "seen": {
           "name": "seen",
@@ -1396,6 +1403,13 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
+        },
+        "seen": {
+          "name": "seen",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "created_at": {
           "name": "created_at",
@@ -1553,6 +1567,89 @@
           ],
           "columnsTo": [
             "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.todos": {
+      "name": "todos",
+      "schema": "",
+      "columns": {
+        "todo_id": {
+          "name": "todo_id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "todos_todo_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completed": {
+          "name": "completed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "profile_id": {
+          "name": "profile_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "todos_profile_id_profiles_profile_id_fk": {
+          "name": "todos_profile_id_profiles_profile_id_fk",
+          "tableFrom": "todos",
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "profile_id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"

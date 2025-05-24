@@ -23,7 +23,7 @@ export const meta = ({
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
-  const idea = await getGptIdea(client as any, { ideaId: params.ideaId });
+  const idea = await getGptIdea(client as any, params.ideaId);
   if (idea.is_claimed) {
     throw redirect(`/ideas`);
   }
