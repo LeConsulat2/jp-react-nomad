@@ -23,18 +23,18 @@ export const meta: MetaFunction = () => {
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const { client, headers } = makeSSRClient(request);
-  const products = await getProductsByDateRange(client, {
+  const products = await getProductsByDateRange(client as any, {
     startDate: DateTime.now().startOf('day'),
     endDate: DateTime.now().endOf('day'),
     limit: 7,
   });
-  const posts = await getPosts(client, {
+  const posts = await getPosts(client as any, {
     limit: 7,
     sorting: 'newest',
   });
-  const ideas = await getGptIdeas(client, { limit: 7 });
-  const jobs = await getJobs(client, { limit: 11 });
-  const teams = await getTeams(client, { limit: 7 });
+  const ideas = await getGptIdeas(client as any, { limit: 7 });
+  const jobs = await getJobs(client as any, { limit: 11 });
+  const teams = await getTeams(client as any, { limit: 7 });
   return { products, posts, ideas, jobs, teams };
 };
 // ==================================================
