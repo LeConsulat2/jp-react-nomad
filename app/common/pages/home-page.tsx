@@ -46,7 +46,13 @@ export default function HomePage() {
     <div className="relative min-h-screen bg-black overflow-hidden">
       {/* FlickeringGrid: 화면 전체에 고정 */}
       <div className="fixed inset-0 w-full h-full z-0 pointer-events-none">
-        <FlickeringGrid color="#E2254F" squareSize={10} maxOpacity={0.8} />
+        <FlickeringGrid
+          color="#E2254F"
+          columns={30}
+          cellSize={10}
+          speed={1.5}
+          opacity={0.8}
+        />
       </div>
 
       {/* Foreground Content */}
