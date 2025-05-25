@@ -14,6 +14,7 @@ import {
   Sidebar,
   SidebarTrigger,
 } from '../components/ui/sidebar';
+import { useIsMobile } from '~/hooks/use-mobile';
 
 export const meta: MetaFunction = () => {
   return [
@@ -42,13 +43,30 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 // 🏠 HomePage 컴포넌트
 // ==================================================
 export default function HomePage() {
+  const isMobile = useIsMobile();
+
   return (
     <SidebarProvider>
-      <main className="min-h-[100vh] flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black text-white px-6 relative">
-        {/* 모바일에서만 보이는 햄버거 버튼 (오른쪽 상단) */}
-        <div className="absolute right-4 top-4 md:hidden z-50">
-          <SidebarTrigger />
+      {/* 1. 상단 네비게이션 (고정, 메인 콘텐츠와 겹치지 않음) */}
+      <header>
+        {/* 데스크탑: 풀 네비게이션, 모바일: 숨김 */}
+        <div className="hidden md:block fixed top-0 left-0 right-0 z-50">
+          <Navigation
+            isLoggedIn={false}
+            hasNotifications={false}
+            hasMessages={false}
+          />
         </div>
+        {/* 모바일: 햄버거 버튼만 오른쪽 상단에 고정 */}
+        {isMobile && (
+          <div className="fixed right-4 top-4 z-50 md:hidden">
+            <SidebarTrigger />
+          </div>
+        )}
+      </header>
+
+      {/* 2. 메인 콘텐츠 (항상 화면 중앙에 위치) */}
+      <main className="min-h-[100vh] flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black text-white px-6">
         <div className="max-w-3xl text-center mx-auto">
           {/* 메인 타이틀 */}
           <h1 className="text-5xl sm:text-6xl font-extrabold mb-6 bg-gradient-to-r from-red-500 via-yellow-400 to-red-400 bg-clip-text text-transparent drop-shadow-lg">
@@ -75,30 +93,33 @@ export default function HomePage() {
           </div>
         </div>
       </main>
-      {/* 모바일 메뉴 (햄버거 눌렀을 때만 열림) */}
-      <Sidebar side="right">
-        <div className="p-6">
-          <h2 className="text-lg font-bold mb-4">Menu</h2>
-          <ul className="space-y-2">
-            <li>
-              <Link to="/" className="block py-2">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/products" className="block py-2">
-                Products
-              </Link>
-            </li>
-            <li>
-              <Link to="/jobs" className="block py-2">
-                Jobs
-              </Link>
-            </li>
-            {/* ...필요한 메뉴 추가... */}
-          </ul>
-        </div>
-      </Sidebar>
+
+      {/* 3. 모바일 메뉴 (햄버거 눌렀을 때만 열림, 데스크탑에서는 렌더링 X) */}
+      {isMobile && (
+        <Sidebar side="right">
+          <div className="p-6">
+            <h2 className="text-lg font-bold mb-4">Menu</h2>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/" className="block py-2">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/products" className="block py-2">
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link to="/jobs" className="block py-2">
+                  Jobs
+                </Link>
+              </li>
+              {/* ...필요한 메뉴 추가... */}
+            </ul>
+          </div>
+        </Sidebar>
+      )}
     </SidebarProvider>
   );
 }
