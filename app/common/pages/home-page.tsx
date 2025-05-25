@@ -43,11 +43,9 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 // ==================================================
 export default function HomePage() {
   return (
-    // 1. SidebarProvider로 전체 감싸기
     <SidebarProvider>
-      {/* 2. 중앙 메인 콘텐츠 */}
       <main className="min-h-[100vh] flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black text-white px-6 relative">
-        {/* 3. 오른쪽 상단 햄버거 버튼 (모바일에서만 보임) */}
+        {/* 모바일에서만 보이는 햄버거 버튼 (오른쪽 상단) */}
         <div className="absolute right-4 top-4 md:hidden z-50">
           <SidebarTrigger />
         </div>
@@ -66,15 +64,18 @@ export default function HomePage() {
           <p className="text-md sm:text-lg mb-8 text-gray-400">
             Get started by exploring our features or sign in to your account.
           </p>
-          {/* 버튼 그룹 */}
+          {/* 버튼 그룹 (항상 중앙에 보임) */}
           <div className="flex justify-center gap-4 w-full">
             <Button variant="default" className="text-lg px-6 py-3" asChild>
               <Link to="/auth/login">Get Started</Link>
             </Button>
+            <Button variant="secondary" className="text-lg px-6 py-3" asChild>
+              <Link to="/auth/join">Join</Link>
+            </Button>
           </div>
         </div>
       </main>
-      {/* 4. 오른쪽에서 슬라이드되는 Sidebar 메뉴 */}
+      {/* 모바일 메뉴 (햄버거 눌렀을 때만 열림) */}
       <Sidebar side="right">
         <div className="p-6">
           <h2 className="text-lg font-bold mb-4">Menu</h2>
