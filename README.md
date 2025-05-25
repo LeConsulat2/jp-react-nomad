@@ -1,23 +1,8 @@
-Ran tool
-
-Ran tool
-
-Ran tool
-
-Ran tool
-
-Ran tool
-
-Ran tool
-Here is a sophisticated `README.md` template for your project, tailored to your stack, features, and conventions (including Sentry, Supabase, OpenAI, Cloudflare, cron jobs, and your Cursor rules):
-
 ---
-
 # JP React Nomad
 
-A modern, full-stack, type-safe SaaS starter built with **React Router**, **TypeScript**, **Supabase**, **OpenAI**, **Sentry**, **Cloudflare**, and **Drizzle ORM**.  
+A modern, full-stack, type-safe SaaS starter built with **React Router**, **TypeScript**, **Supabase**, **OpenAI**, **Sentry**, **Cloudflare**, and **Drizzle ORM**.
 This project is modular, scalable, and production-ready, following best practices for code structure, error monitoring, and cloud-native deployment.
-
 ---
 
 ## Table of Contents
