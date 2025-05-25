@@ -16,8 +16,8 @@ import { makeSSRClient } from '~/supa-client';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Home | wemake' },
-    { name: 'description', content: 'Welcome to wemake' },
+    { title: 'Home | We-Create' },
+    { name: 'description', content: 'Welcome to We-Create' },
   ];
 };
 
