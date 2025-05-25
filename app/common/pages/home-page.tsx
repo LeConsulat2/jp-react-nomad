@@ -62,16 +62,16 @@ export default function HomePage() {
         </p>
 
         {/* 버튼 그룹 */}
-        <div className="flex justify-center gap-4">
-          <Button variant="default" className="text-lg px-6 py-3">
-            Get Started
+        <div className="flex justify-center gap-4 w-full">
+          <Button variant="default" className="text-lg px-6 py-3" asChild>
+            <Link to="/login">Get Started</Link>
           </Button>
-          <Button
+          {/* <Button
             variant="outline"
             className="text-lg px-6 py-3 border-gray-500 text-gray-300 hover:text-white"
           >
             Learn More
-          </Button>
+          </Button> */}
         </div>
       </div>
     </main>
