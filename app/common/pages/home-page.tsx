@@ -43,25 +43,39 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 // ==================================================
 export default function HomePage() {
   return (
-    // SidebarProvider로 전체 감싸기 (모바일/PC 모두 대응)
+    // 1. SidebarProvider로 전체 감싸기
     <SidebarProvider>
-      {/* 상단 네비게이션 + 모바일 햄버거 버튼 */}
-      <div className="relative">
-        {/* 모바일에서만 보이는 햄버거 버튼 (오른쪽 상단 고정) */}
+      {/* 2. 중앙 메인 콘텐츠 */}
+      <main className="min-h-[100vh] flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black text-white px-6 relative">
+        {/* 3. 오른쪽 상단 햄버거 버튼 (모바일에서만 보임) */}
         <div className="absolute right-4 top-4 md:hidden z-50">
           <SidebarTrigger />
         </div>
-        {/* 네비게이션 바 (PC/모바일 공통) */}
-        <Navigation
-          isLoggedIn={false}
-          hasNotifications={false}
-          hasMessages={false}
-        />
-      </div>
-
-      {/* Sidebar(모바일 메뉴) - 오른쪽에서 슬라이드 */}
+        <div className="max-w-3xl text-center mx-auto">
+          {/* 메인 타이틀 */}
+          <h1 className="text-5xl sm:text-6xl font-extrabold mb-6 bg-gradient-to-r from-red-500 via-yellow-400 to-red-400 bg-clip-text text-transparent drop-shadow-lg">
+            Welcome to <span className="italic">We-Create</span>
+          </h1>
+          {/* 설명 텍스트 */}
+          <p className="text-xl sm:text-2xl font-light mb-6 leading-relaxed text-gray-300">
+            Share your ideas. Build your Portfolios. Get the latest weekly AI
+            updates and daily sparks from{' '}
+            <strong className="text-white">IdeasGPT</strong>.
+          </p>
+          {/* 서브 텍스트 */}
+          <p className="text-md sm:text-lg mb-8 text-gray-400">
+            Get started by exploring our features or sign in to your account.
+          </p>
+          {/* 버튼 그룹 */}
+          <div className="flex justify-center gap-4 w-full">
+            <Button variant="default" className="text-lg px-6 py-3" asChild>
+              <Link to="/auth/login">Get Started</Link>
+            </Button>
+          </div>
+        </div>
+      </main>
+      {/* 4. 오른쪽에서 슬라이드되는 Sidebar 메뉴 */}
       <Sidebar side="right">
-        {/* 여기에 메뉴 내용(링크 등) 추가 */}
         <div className="p-6">
           <h2 className="text-lg font-bold mb-4">Menu</h2>
           <ul className="space-y-2">
@@ -84,13 +98,6 @@ export default function HomePage() {
           </ul>
         </div>
       </Sidebar>
-
-      {/* 기존 메인 콘텐츠 */}
-      <main className="min-h-[100vh] flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black text-white px-6">
-        <div className="max-w-3xl text-center">
-          {/* ...기존 내용 유지... */}
-        </div>
-      </main>
     </SidebarProvider>
   );
 }
