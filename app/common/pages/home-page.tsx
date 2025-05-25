@@ -40,149 +40,40 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 // ==================================================
 // 🏠 HomePage 컴포넌트
 // ==================================================
-export default function HomePage({ loaderData }: Route.ComponentProps) {
+export default function HomePage() {
   return (
-    <div className="px-20 space-y-40">
-      {/* ==================================================
-          🛍️ Today's Products 섹션
-          ================================================== */}
-      <div className="grid grid-cols-3 gap-4">
-        <div>
-          <h2 className="text-5xl font-bold leading-tight tracking-tight">
-            Today's Products
-          </h2>
-          <p className="text-xl font-light text-foreground">
-            The best products made by our community today.
-          </p>
-          <Button variant="link" asChild className="text-lg p-0">
-            <Link to="/products/leaderboards">Explore all products &rarr;</Link>
-          </Button>
-        </div>
-        {loaderData.products.map((product) => (
-          <ProductCard
-            key={product.product_id}
-            id={product.product_id}
-            name={product.name}
-            description={product.tagline}
-            reviewsCount={product.reviews}
-            viewsCount={product.views}
-            votesCount={product.upvotes}
-          />
-        ))}
-      </div>
+    <main className="min-h-[100vh] flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black text-white px-6">
+      <div className="max-w-3xl text-center">
+        {/* 메인 타이틀 */}
+        <h1 className="text-5xl sm:text-6xl font-extrabold mb-6 bg-gradient-to-r from-red-500 via-yellow-400 to-red-400 bg-clip-text text-transparent drop-shadow-lg">
+          Welcome to <span className="italic">We-Create</span>
+        </h1>
 
-      {/* ==================================================
-          💬 Latest Discussions 섹션
-          ================================================== */}
-      <div className="grid grid-cols-3 gap-4">
-        <div>
-          <h2 className="text-5xl font-bold leading-tight tracking-tight">
-            Latest Discussions
-          </h2>
-          <p className="text-xl font-light text-foreground">
-            The latest discussions from our community.
-          </p>
-          <Button variant="link" asChild className="text-lg p-0">
-            <Link to="/community">Explore all discussions &rarr;</Link>
-          </Button>
-        </div>
-        {loaderData.posts.map((post) => (
-          <PostCard
-            key={post.post_id}
-            id={post.post_id}
-            title={post.title}
-            author={post.author}
-            authorAvatarUrl={post.author_avatar}
-            category={post.topic_slug}
-            postedAt={post.created_at}
-            votesCount={post.upvotes}
-          />
-        ))}
-      </div>
+        {/* 설명 텍스트 */}
+        <p className="text-xl sm:text-2xl font-light mb-6 leading-relaxed text-gray-300">
+          Share your ideas. Build your Portfolios. Get the latest weekly AI
+          updates and daily sparks from{' '}
+          <strong className="text-white">IdeasGPT</strong>.
+        </p>
 
-      {/* ==================================================
-          💡 IdeasGPT 섹션
-          ================================================== */}
-      <div className="grid grid-cols-3 gap-4">
-        <div>
-          <h2 className="text-5xl font-bold text-foreground">IdeasGPT</h2>
-          <p className="text-xl font-light text-foreground">
-            Find your next ideas!
-          </p>
-          <Button variant="link" asChild className="text-lg p-0">
-            <Link to="/ideas">Explore All Ideas! &rarr;</Link>
-          </Button>
-        </div>
-        {loaderData.ideas.map((idea) => (
-          <IdeaCard
-            key={idea.gpt_idea_id}
-            id={idea.gpt_idea_id}
-            title={idea.idea}
-            viewsCount={idea.views}
-            postedAt={idea.created_at}
-            likesCount={idea.likes}
-            claimed={idea.is_claimed}
-          />
-        ))}
-      </div>
+        {/* 서브 텍스트 */}
+        <p className="text-md sm:text-lg mb-8 text-gray-400">
+          Get started by exploring our features or sign in to your account.
+        </p>
 
-      {/* ==================================================
-          🧑‍💼 Latest Jobs 섹션
-          ================================================== */}
-      <div className="grid grid-cols-4 gap-4">
-        <div>
-          <h2 className="text-5xl font-bold leading-tight tracking-tight">
-            Latest Jobs
-          </h2>
-          <p className="text-xl font-light text-foreground">
-            Find your dream job.
-          </p>
-          <Button variant="link" asChild className="text-lg p-0">
-            <Link to="/jobs">Explore all jobs &rarr;</Link>
+        {/* 버튼 그룹 */}
+        <div className="flex justify-center gap-4">
+          <Button variant="default" className="text-lg px-6 py-3">
+            Get Started
+          </Button>
+          <Button
+            variant="outline"
+            className="text-lg px-6 py-3 border-gray-500 text-gray-300 hover:text-white"
+          >
+            Learn More
           </Button>
         </div>
-        {loaderData.jobs.map((job) => (
-          <JobCard
-            key={job.job_id}
-            id={job.job_id}
-            company={job.company_name}
-            companyLogoUrl={job.company_logo}
-            companyHq={job.company_location}
-            title={job.position}
-            postedAt={job.created_at}
-            type={job.job_type}
-            positionLocation={job.location}
-            salary={job.salary_range}
-          />
-        ))}
       </div>
-
-      {/* ==================================================
-          👥 Find a Team Crew 섹션
-          ================================================== */}
-      <div className="grid grid-cols-4 gap-4">
-        <div>
-          <h2 className="text-5xl font-bold leading-tight tracking-tight">
-            Find a team crew
-          </h2>
-          <p className="text-xl font-light text-foreground">
-            Browse and join a group
-          </p>
-          <Button variant="link" asChild className="text-lg p-0">
-            <Link to="/teams">Discover all initiatives & teams</Link>
-          </Button>
-        </div>
-        {loaderData.teams.map((team) => (
-          <TeamCard
-            key={team.team_id}
-            id={team.team_id}
-            leaderUsername={team.team_leader.username}
-            leaderAvatarUrl={team.team_leader.avatar}
-            positions={team.roles.split(',')}
-            projectDescription={team.product_description}
-          />
-        ))}
-      </div>
-    </div>
+    </main>
   );
 }
