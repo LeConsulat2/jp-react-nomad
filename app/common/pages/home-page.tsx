@@ -47,8 +47,8 @@ export default function HomePage() {
     <SidebarProvider>
       {/* 상단 네비게이션 + 모바일 햄버거 버튼 */}
       <div className="relative">
-        {/* 모바일에서만 보이는 햄버거 버튼 */}
-        <div className="absolute left-4 top-4 md:hidden z-50">
+        {/* 모바일에서만 보이는 햄버거 버튼 (오른쪽 상단 고정) */}
+        <div className="absolute right-4 top-4 md:hidden z-50">
           <SidebarTrigger />
         </div>
         {/* 네비게이션 바 (PC/모바일 공통) */}
@@ -59,8 +59,8 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Sidebar(모바일 메뉴) - 원하는 메뉴 내용 넣기 */}
-      <Sidebar>
+      {/* Sidebar(모바일 메뉴) - 오른쪽에서 슬라이드 */}
+      <Sidebar side="right">
         {/* 여기에 메뉴 내용(링크 등) 추가 */}
         <div className="p-6">
           <h2 className="text-lg font-bold mb-4">Menu</h2>
